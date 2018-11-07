@@ -33,6 +33,8 @@ movieController.add_movie(3, "IT", "A movie about a shapeshifter beeing who feed
 movieController.delete_movie(2)
 
 movies = movieController.get_all()
+
 print("Filmele sunt:")
 for movie in movies:
     print(movie)
+    
