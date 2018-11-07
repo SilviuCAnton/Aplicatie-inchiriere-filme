@@ -25,6 +25,9 @@ class Movie:
     
     def getGenre(self):
         return self.__genre
+    
+    def __repr__(self):
+        return "#{} {}, genre: {}".format(self.getID(), self.getTitle(), self.getGenre())
 
 
 class Client:
@@ -44,4 +47,7 @@ class Client:
     
     def getCNP(self):
         return self.__cnp
+    
+    def __repr__(self):
+        return "#{} {}".format(self.getID(), self.getName())
     
