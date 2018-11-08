@@ -28,6 +28,9 @@ class MovieController:
             - title - titlul filmului
             - description - descrierea filmului
             - genre - genul filmului
+        
+        Exceptions:
+            - ridica ValueError daca exista deja filmul
         '''
         movie = Movie(self.__nextMovieID, title, description, genre)
         

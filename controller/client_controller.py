@@ -40,6 +40,9 @@ class ClientController:
             - firstName - prenumele clientului
             - lastName - nuemele clientului
             - CNP - codul numeric personal al clientului
+            
+        Exceptions:
+            - ridica ValueError daca exista deja clientul
         '''
         client = Client(self.__nextClientID, firstName, lastName, CNP)
         
