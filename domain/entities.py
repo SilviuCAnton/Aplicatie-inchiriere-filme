@@ -47,6 +47,9 @@ class Client:
         self.__lastName = lastName
         self.__cnp = CNP
         
+    def __eq__(self, otherClient):
+        return self.__cnp == otherClient.__cnp
+        
     def getID(self):       
         return self.__id
             

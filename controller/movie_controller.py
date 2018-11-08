@@ -9,15 +9,15 @@ from domain.entities import Movie
 
 class MovieController:
     
-    def __init__(self):
-        self.__repository = {}
+    def __init__(self, repository):
+        self.__repository = repository
         self.__nextMovieID = 1
     
     def get_all(self):
         '''
         Descriprion: returneaza o lista cu toate filmele din repository-ul de filme
         '''
-        return list(self.__repository.values())
+        return self.__repository.get_all()
     
     def add_movie(self, title, description, genre):
         '''
@@ -29,14 +29,14 @@ class MovieController:
             - genre - genul filmului
         '''
         movie = Movie(self.__nextMovieID, title, description, genre)
-        self.__nextMovieID +=1
-        self.__repository[movie.getID()] = movie 
+        self.__nextMovieID += 1
+        self.__repository.store(movie.getID(), movie) 
         
     def delete_movie(self, ID):
         '''
         Description: sterge un film din repository-ul de filme
         '''
-        self.__repository.pop(ID)
+        self.__repository.delete(ID)
         
     def modify_movie(self, ID, title, description, genre):
         '''
@@ -48,9 +48,11 @@ class MovieController:
             - description - descriere
             - genre - gen
         '''
-        self.__repository[ID].setTitle(title)
-        self.__repository[ID].setGenre(genre)
-        self.__repository[ID].setDescription(description)
+        movie = self.__repository.getItem(ID)
+        movie.setTitle(title)
+        movie.setGenre(genre)
+        movie.setDescription(description)
+        self.__repository.update(movie)
         
     def modify_movie_genre(self, ID, genre):
         '''
@@ -60,7 +62,9 @@ class MovieController:
             - ID - id-ul filmului caruia ii modificam datele
             - genre - gen
         '''
-        self.__repository[ID].setGenre(genre)
+        movie = self.__repository.getItem(ID)
+        movie.setGenre(genre)
+        self.__repository.update(movie)
         
     def modify_movie_description(self, ID, description):
         '''
@@ -70,7 +74,9 @@ class MovieController:
             - ID - id-ul filmului caruia ii modificam datele
             - description - descriere
         '''
-        self.__repository[ID].setDescription(description)
+        movie = self.__repository.getItem(ID)
+        movie.setDescription(description)
+        self.__repository.update(movie)
         
     def modify_movie_title(self, ID, title):
         '''
@@ -80,5 +86,7 @@ class MovieController:
             - ID - id-ul filmului caruia ii modificam datele
             - title - titlu
         '''
-        self.__repository[ID].setTitle(title)
+        movie = self.__repository.getItem(ID)
+        movie.setTitle(title)
+        self.__repository.update(movie)
         

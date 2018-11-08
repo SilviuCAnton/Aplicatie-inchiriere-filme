@@ -9,15 +9,15 @@ from domain.entities import Client
 
 class ClientController:
     
-    def __init__(self):
-        self.__repository = {}
-        self.__nextClient_ID = 1
+    def __init__(self, repository):
+        self.__repository = repository
+        self.__nextClientID = 1
     
     def get_all(self):
         '''
         Description: returneaza o lista cu toti clientii din repository-ul de clienti
         '''
-        return list(self.__repository.values())
+        return self.__repository.get_all()
     
     def get_client(self, ID):
         '''
@@ -29,7 +29,7 @@ class ClientController:
         Out:
             - client
         '''
-        return self.__repository[ID]
+        return self.__repository.getItem(ID)
     
     def add_client(self, firstName, lastName, CNP):
         '''
@@ -40,15 +40,19 @@ class ClientController:
             - lastName - nuemele clientului
             - CNP - codul numeric personal al clientului
         '''
-        client = Client(self.__nextClient_ID, firstName, lastName, CNP)
-        self.__nextClient_ID += 1
-        self.__repository[client.getID()] = client  
+        client = Client(self.__nextClientID, firstName, lastName, CNP)
+        self.__nextClientID += 1
+        
+        if client in self.__repository.get_all():
+            raise ValueError("Clientul deja exista.")
+        
+        self.__repository.store(client.getID(), client)  
         
     def delete_client(self, ID):
         '''
         Description: sterge un client din repository-ul de clienti
         '''
-        self.__repository.pop(ID)
+        self.__repository.delete(ID)
     
     def modify_client(self, ID, firstName, lastName, CNP):
         '''
@@ -60,8 +64,11 @@ class ClientController:
             - lastName - nume
             - CNP - cod numeric personal
         '''
-        self.__repository[ID].setName(firstName, lastName)
-        self.__repository[ID].setCNP(CNP)
+        
+        client = self.__repository.getItem(ID)
+        client.setName(firstName, lastName)
+        client.setCNP(CNP)
+        self.__repository.update(client)
         
     def modify_client_name(self, ID, firstName, lastName):
         '''
@@ -72,7 +79,9 @@ class ClientController:
             - firstName - prenume
             - lastName - nume
         '''
-        self.__repository[ID].setName(firstName, lastName)
+        client = self.__repository.getItem(ID)
+        client.setName(firstName, lastName)
+        self.__repository.update(client)
     
     def modify_client_CNP(self, ID, CNP):
         '''
@@ -82,5 +91,7 @@ class ClientController:
             - ID - id-ul clientului caruia ii modificam datele
             - CNP - cod numeric personal
         '''
-        self.__repository[ID].setCNP(CNP)
+        client = self.__repository.getItem(ID)
+        client.setCNP(CNP)
+        self.__repository.update(client)
         
