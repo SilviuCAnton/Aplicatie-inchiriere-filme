@@ -13,6 +13,9 @@ class Movie:
         self.__title = title
         self.__description = description
         self.__genre = genre
+        
+    def __eq__(self, otherMovie):
+        return self.__title == otherMovie.__title
     
     def getID(self):
         return self.__id

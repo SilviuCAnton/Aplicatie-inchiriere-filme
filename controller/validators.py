@@ -8,10 +8,15 @@ Modul pentru validatoare
 
 class ClientValidator:
     
-    def validate(self, client):
-        pass
-    
+    def validate(self, client):      
+        if not 1000000000000<client.getCNP()< 10000000000000:
+            raise ValueError("CNP-ul trebuie sa aiba exact 14 cifre!!!")
+        
+        if client.getName() == "":
+            raise ValueError("Nume nu poate fi vid!!!")
+        
 class MovieValidator:
     
     def validate(self, movie):
-        pass
+        if movie.getTitle() == "":
+            raise ValueError("Titlu nu poate fi vid!!!")

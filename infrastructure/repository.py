@@ -18,9 +18,13 @@ class MemoryRepository:
         self.__items[ID] = item
         
     def delete(self, ID):
+        if ID not in self.__items.keys():
+            raise ValueError("Nu exista id-ul cautat!!!")
         self.__items.pop(ID)
     
     def getItem(self, ID):
+        if ID not in self.__items.keys():
+            raise ValueError("Nu exista id-ul cautat!!!")
         return self.__items[ID]
     
     def update(self, item):
