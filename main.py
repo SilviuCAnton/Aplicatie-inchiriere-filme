@@ -10,7 +10,7 @@ from controller.movie_controller import MovieController
 from infrastructure.repository import MemoryRepository
 from controller.validators import ClientValidator, MovieValidator
 
-clientController = ClientController(MemoryRepository(), ClientValidator())
+clientController = ClientController(MemoryRepository(ClientValidator()))
 
 clientController.add_client("Silviu", "Anton", 1990722170051)
 clientController.add_client("Andreea", "Finichiu", 1990722170052)
@@ -26,9 +26,12 @@ clients = clientController.get_all()
 print("Clientii sunt:")
 for client in clients:
     print(client)
+print("Numarul de clienti: ", clientController.number_of_clients())
 print()
 
-movieController = MovieController(MemoryRepository(), MovieValidator())
+#----------------------------------------------------------------------------------------
+
+movieController = MovieController(MemoryRepository(MovieValidator()))
 
 movieController.add_movie("Pirates of the Carraibbean", "A movie about pirates and their mighty adventures.", "Action/Adventure")
 movieController.add_movie("Lord of the Rings", "A movie about mithical creatures and a ring of power.", "Action/Adventure/Fantasy")
@@ -41,3 +44,4 @@ movies = movieController.get_all()
 print("Filmele sunt:")
 for movie in movies:
     print(movie)
+print("Numarul de filme: ", movieController.number_of_movies())

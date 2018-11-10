@@ -9,9 +9,8 @@ from domain.entities import Movie
 
 class MovieController:
     
-    def __init__(self, repository, validator):
+    def __init__(self, repository):
         self.__repository = repository
-        self.__validator = validator
         self.__nextMovieID = 1
     
     def get_all(self):
@@ -34,9 +33,7 @@ class MovieController:
         '''
         movie = Movie(self.__nextMovieID, title, description, genre)
         
-        try:
-            self.__validator.validate(movie)
-            
+        try:          
             if movie in self.__repository.get_all():
                 raise ValueError("Filmul exista deja!!!")
             
@@ -74,7 +71,6 @@ class MovieController:
             movie.setGenre(genre)
             movie.setDescription(description)
             
-            self.__validator.validate(movie)
             self.__repository.update(movie)
         
         except ValueError as err:
@@ -94,7 +90,6 @@ class MovieController:
             movie = self.__repository.getItem(ID)
             movie.setGenre(genre)
             
-            self.__validator.validate(movie)
             self.__repository.update(movie)
         
         except ValueError as err:
@@ -114,7 +109,6 @@ class MovieController:
             movie = self.__repository.getItem(ID)
             movie.setDescription(description)
             
-            self.__validator.validate(movie)
             self.__repository.update(movie)
         
         except ValueError as err:
@@ -134,11 +128,13 @@ class MovieController:
             movie = self.__repository.getItem(ID)
             movie.setTitle(title)
             
-            self.__validator.validate(movie)
             self.__repository.update(movie)
         
         except ValueError as err:
             print()
             print(err)
             print()
+            
+    def number_of_movies(self):
+        return self.__repository.size()
         

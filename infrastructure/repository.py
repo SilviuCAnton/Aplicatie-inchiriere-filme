@@ -8,14 +8,16 @@ Modul pentru modul de stocare a datelor (repository)
 
 class MemoryRepository:
     
-    def __init__(self):
+    def __init__(self, validator):
         self.__items = {}
+        self.__validator = validator
         
     def get_all(self):
         return list(self.__items.values())
     
     def store(self, ID, item):
-        self.__items[ID] = item
+            self.__validator.validate(item)
+            self.__items[ID] = item
         
     def delete(self, ID):
         if ID not in self.__items.keys():
@@ -28,4 +30,8 @@ class MemoryRepository:
         return self.__items[ID]
     
     def update(self, item):
+        self.__validator.validate(item)
         self.__items[item.getID()] = item
+        
+    def size(self):
+        return len(self.__items)

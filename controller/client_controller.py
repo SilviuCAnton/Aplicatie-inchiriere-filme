@@ -9,9 +9,8 @@ from domain.entities import Client
 
 class ClientController:
     
-    def __init__(self, repository, validator):
+    def __init__(self, repository):
         self.__repository = repository
-        self.__validator = validator
         self.__nextClientID = 1
     
     def get_all(self):
@@ -47,7 +46,7 @@ class ClientController:
         client = Client(self.__nextClientID, firstName, lastName, CNP)
         
         try:
-            self.__validator.validate(client)
+            
             self.__nextClientID += 1
         
             if client in self.__repository.get_all():
@@ -84,8 +83,7 @@ class ClientController:
             client = self.__repository.getItem(ID)
             client.setName(firstName, lastName)
             client.setCNP(CNP)
-            
-            self.__validator.validate(client)          
+                      
             self.__repository.update(client)
         
         except ValueError as err:
@@ -106,7 +104,6 @@ class ClientController:
             client = self.__repository.getItem(ID)
             client.setName(firstName, lastName)
         
-            self.__validator.validate(client) 
             self.__repository.update(client)
             
         except ValueError as err:
@@ -126,11 +123,13 @@ class ClientController:
             client = self.__repository.getItem(ID)
             client.setCNP(CNP)
             
-            self.__validator.validate(client)
             self.__repository.update(client)
         
         except ValueError as err:
             print()
             print(err)
             print()
+            
+    def number_of_clients(self):
+        return self.__repository.size()
         
