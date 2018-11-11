@@ -8,7 +8,7 @@ Modulul principal al aplicatiei
 from controller.client_controller import ClientController
 from controller.movie_controller import MovieController
 from infrastructure.repository import MemoryRepository
-from controller.validators import ClientValidator, MovieValidator
+from errors_validators_tests.validators import ClientValidator, MovieValidator
 
 clientController = ClientController(MemoryRepository(ClientValidator()))
 

@@ -5,6 +5,7 @@ Modul pentru modul de stocare a datelor (repository)
 
 @author: Silviu Anton
 '''
+from errors_validators_tests.errors import RepositoryError
 
 class MemoryRepository:
     
@@ -21,12 +22,12 @@ class MemoryRepository:
         
     def delete(self, ID):
         if ID not in self.__items.keys():
-            raise ValueError("Nu exista id-ul cautat!!!")
+            raise RepositoryError("Nu exista id-ul cautat!!!")
         self.__items.pop(ID)
     
     def getItem(self, ID):
         if ID not in self.__items.keys():
-            raise ValueError("Nu exista id-ul cautat!!!")
+            raise RepositoryError("Nu exista id-ul cautat!!!")
         return self.__items[ID]
     
     def update(self, item):

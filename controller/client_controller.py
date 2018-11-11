@@ -6,6 +6,7 @@ Modul pentru gestionarea clientilor.
 @author: Silviu Anton
 '''
 from domain.entities import Client
+from errors_validators_tests.errors import RepositoryError
 
 class ClientController:
     
@@ -41,7 +42,7 @@ class ClientController:
             - CNP - codul numeric personal al clientului
             
         Exceptions:
-            - ridica ValueError daca exista deja clientul
+            - ridica RepositoryError daca exista deja clientul
         '''
         client = Client(self.__nextClientID, firstName, lastName, CNP)
         
@@ -50,11 +51,11 @@ class ClientController:
             self.__nextClientID += 1
         
             if client in self.__repository.get_all():
-                raise ValueError("Clientul deja exista!!!")
+                raise RepositoryError("Clientul deja exista!!!")
         
             self.__repository.store(client.getID(), client)
         
-        except ValueError as err:
+        except RecursionError as err:
             print()
             print(err)
             print()
@@ -66,7 +67,7 @@ class ClientController:
         try:
             self.__repository.delete(ID)
             
-        except ValueError as err:
+        except RepositoryError as err:
             print(err)
     
     def modify_client(self, ID, firstName, lastName, CNP):
@@ -86,7 +87,7 @@ class ClientController:
                       
             self.__repository.update(client)
         
-        except ValueError as err:
+        except RepositoryError as err:
             print()
             print(err)
             print()   
@@ -106,7 +107,7 @@ class ClientController:
         
             self.__repository.update(client)
             
-        except ValueError as err:
+        except RepositoryError as err:
             print()
             print(err)
             print()
@@ -125,7 +126,7 @@ class ClientController:
             
             self.__repository.update(client)
         
-        except ValueError as err:
+        except RepositoryError as err:
             print()
             print(err)
             print()
