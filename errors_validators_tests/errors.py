@@ -9,3 +9,5 @@ Modul pentru definirea exceptiilor
 class RepositoryError(Exception):
     pass
 
+class ValidError(Exception):
+    pass

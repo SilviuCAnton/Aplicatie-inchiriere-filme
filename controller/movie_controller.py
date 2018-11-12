@@ -6,6 +6,7 @@ Modul pentru gestionarea filmelor
 @author: Silviu Anton
 '''
 from domain.entities import Movie
+from errors_validators_tests.errors import RepositoryError, ValidError
 
 class MovieController:
     
@@ -31,29 +32,24 @@ class MovieController:
         Exceptions:
             - ridica ValueError daca exista deja filmul
         '''
-        movie = Movie(self.__nextMovieID, title, description, genre)
-        
-        try:          
+        try: 
+            movie = Movie(self.__nextMovieID, title, description, genre)
+                  
             if movie in self.__repository.get_all():
-                raise ValueError("Filmul exista deja!!!")
+                raise RepositoryError("Filmul exista deja!!!")
             
             self.__nextMovieID += 1
             self.__repository.store(movie.getID(), movie) 
-        
-        except ValueError as err:
-            print()
-            print(err)
-            print()
+            
+        except Exception as ex:
+            self.__nextMovieID -= 1
+            raise ex
         
     def delete_movie(self, ID):
         '''
         Description: sterge un film din repository-ul de filme
         '''
-        try:
-            self.__repository.delete(ID)
-            
-        except ValueError as err:
-            print(err)
+        self.__repository.delete(ID)
         
     def modify_movie(self, ID, title, description, genre):
         '''
@@ -65,18 +61,12 @@ class MovieController:
             - description - descriere
             - genre - gen
         '''
-        try:
-            movie = self.__repository.getItem(ID)
-            movie.setTitle(title)
-            movie.setGenre(genre)
-            movie.setDescription(description)
+        movie = self.__repository.getItem(ID)
+        movie.setTitle(title)
+        movie.setGenre(genre)
+        movie.setDescription(description)
             
-            self.__repository.update(movie)
-        
-        except ValueError as err:
-            print()
-            print(err)
-            print()
+        self.__repository.update(movie)
         
     def modify_movie_genre(self, ID, genre):
         '''
@@ -86,16 +76,10 @@ class MovieController:
             - ID - id-ul filmului caruia ii modificam datele
             - genre - gen
         '''
-        try:
-            movie = self.__repository.getItem(ID)
-            movie.setGenre(genre)
+        movie = self.__repository.getItem(ID)
+        movie.setGenre(genre)
             
-            self.__repository.update(movie)
-        
-        except ValueError as err:
-            print()
-            print(err)
-            print()
+        self.__repository.update(movie)
         
     def modify_movie_description(self, ID, description):
         '''
@@ -105,16 +89,10 @@ class MovieController:
             - ID - id-ul filmului caruia ii modificam datele
             - description - descriere
         '''
-        try:
-            movie = self.__repository.getItem(ID)
-            movie.setDescription(description)
+        movie = self.__repository.getItem(ID)
+        movie.setDescription(description)
             
-            self.__repository.update(movie)
-        
-        except ValueError as err:
-            print()
-            print(err)
-            print()
+        self.__repository.update(movie)
         
     def modify_movie_title(self, ID, title):
         '''
@@ -124,16 +102,10 @@ class MovieController:
             - ID - id-ul filmului caruia ii modificam datele
             - title - titlu
         '''
-        try:
-            movie = self.__repository.getItem(ID)
-            movie.setTitle(title)
+        movie = self.__repository.getItem(ID)
+        movie.setTitle(title)
             
-            self.__repository.update(movie)
-        
-        except ValueError as err:
-            print()
-            print(err)
-            print()
+        self.__repository.update(movie)
             
     def number_of_movies(self):
         return self.__repository.size()

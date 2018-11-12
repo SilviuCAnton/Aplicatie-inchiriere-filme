@@ -46,29 +46,22 @@ class ClientController:
         '''
         client = Client(self.__nextClientID, firstName, lastName, CNP)
         
-        try:
-            
+        if client in self.__repository.get_all():
+            raise RepositoryError("Clientul deja exista!!!")
+        
+        try:    
             self.__nextClientID += 1
-        
-            if client in self.__repository.get_all():
-                raise RepositoryError("Clientul deja exista!!!")
-        
             self.__repository.store(client.getID(), client)
-        
-        except RecursionError as err:
-            print()
-            print(err)
-            print()
+            
+        except Exception as ex:
+            self.__nextClientID -= 1
+            raise ex
         
     def delete_client(self, ID):
         '''
         Description: sterge un client din repository-ul de clienti
         '''
-        try:
-            self.__repository.delete(ID)
-            
-        except RepositoryError as err:
-            print(err)
+        self.__repository.delete(ID)
     
     def modify_client(self, ID, firstName, lastName, CNP):
         '''
@@ -80,17 +73,11 @@ class ClientController:
             - lastName - nume
             - CNP - cod numeric personal
         '''
-        try:
-            client = self.__repository.getItem(ID)
-            client.setName(firstName, lastName)
-            client.setCNP(CNP)
+        client = self.__repository.getItem(ID)
+        client.setName(firstName, lastName)
+        client.setCNP(CNP)
                       
-            self.__repository.update(client)
-        
-        except RepositoryError as err:
-            print()
-            print(err)
-            print()   
+        self.__repository.update(client)
         
     def modify_client_name(self, ID, firstName, lastName):
         '''
@@ -101,16 +88,10 @@ class ClientController:
             - firstName - prenume
             - lastName - nume
         '''
-        try:
-            client = self.__repository.getItem(ID)
-            client.setName(firstName, lastName)
+        client = self.__repository.getItem(ID)
+        client.setName(firstName, lastName)
         
-            self.__repository.update(client)
-            
-        except RepositoryError as err:
-            print()
-            print(err)
-            print()
+        self.__repository.update(client)
     
     def modify_client_CNP(self, ID, CNP):
         '''
@@ -120,16 +101,10 @@ class ClientController:
             - ID - id-ul clientului caruia ii modificam datele
             - CNP - cod numeric personal
         '''  
-        try:
-            client = self.__repository.getItem(ID)
-            client.setCNP(CNP)
+        client = self.__repository.getItem(ID)
+        client.setCNP(CNP)
             
-            self.__repository.update(client)
-        
-        except RepositoryError as err:
-            print()
-            print(err)
-            print()
+        self.__repository.update(client)
             
     def number_of_clients(self):
         return self.__repository.size()
