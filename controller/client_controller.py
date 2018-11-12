@@ -6,7 +6,7 @@ Modul pentru gestionarea clientilor.
 @author: Silviu Anton
 '''
 from domain.entities import Client
-from errors_validators_tests.errors import RepositoryError
+from errors_tests.errors import RepositoryError
 
 class ClientController:
     

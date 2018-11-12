@@ -8,9 +8,15 @@ Modulul principal al aplicatiei
 from controller.client_controller import ClientController
 from controller.movie_controller import MovieController
 from infrastructure.repository import MemoryRepository
-from errors_validators_tests.validators import ClientValidator, MovieValidator
+from domain.validators import ClientValidator, MovieValidator
 from ui.console import Console
+from errors_tests.tests import TestClient, TestMovie
 
+
+testClient = TestClient()
+testMovie = TestMovie()
+testClient.runTests()
+testMovie.runTests()
 
 clientController = ClientController(MemoryRepository(ClientValidator()))
 movieController = MovieController(MemoryRepository(MovieValidator()))

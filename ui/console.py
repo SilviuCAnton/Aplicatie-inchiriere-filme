@@ -5,7 +5,7 @@ Modul pentru interactiunea cu utilizatorul
 
 @author: Silviu Anton
 '''
-from errors_validators_tests.errors import RepositoryError, ValidError
+from errors_tests.errors import RepositoryError, ValidError
 from time import sleep
 
 class Console:

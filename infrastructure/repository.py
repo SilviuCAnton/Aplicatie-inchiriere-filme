@@ -5,7 +5,7 @@ Modul pentru modul de stocare a datelor (repository)
 
 @author: Silviu Anton
 '''
-from errors_validators_tests.errors import RepositoryError
+from errors_tests.errors import RepositoryError
 
 class MemoryRepository:
     
@@ -17,8 +17,10 @@ class MemoryRepository:
         return list(self.__items.values())
     
     def store(self, ID, item):
-            self.__validator.validate(item)
-            self.__items[ID] = item
+        if ID in self.__items:
+            raise RepositoryError("Clientul deja exista!!!")
+        self.__validator.validate(item)
+        self.__items[ID] = item
         
     def delete(self, ID):
         if ID not in self.__items.keys():
@@ -36,3 +38,4 @@ class MemoryRepository:
         
     def size(self):
         return len(self.__items)
+    

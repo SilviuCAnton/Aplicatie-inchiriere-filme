@@ -6,7 +6,7 @@ Modul pentru gestionarea filmelor
 @author: Silviu Anton
 '''
 from domain.entities import Movie
-from errors_validators_tests.errors import RepositoryError
+from errors_tests.errors import RepositoryError
 
 class MovieController:
     
