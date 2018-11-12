@@ -20,7 +20,7 @@ class ClientValidator:
     
     def validate(self, client):      
         if not 1000000000000<client.getCNP()< 10000000000000:
-            raise ValidError("CNP-ul trebuie sa aiba exact 14 cifre!!!")
+            raise ValidError("CNP-ul trebuie sa aiba exact 13 cifre!!!")
         
         if client.getName() == " ":
             raise ValidError("Nume nu poate fi vid!!!")

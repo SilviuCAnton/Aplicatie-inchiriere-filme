@@ -6,7 +6,7 @@ Modul pentru gestionarea filmelor
 @author: Silviu Anton
 '''
 from domain.entities import Movie
-from errors_validators_tests.errors import RepositoryError, ValidError
+from errors_validators_tests.errors import RepositoryError
 
 class MovieController:
     
@@ -19,6 +19,18 @@ class MovieController:
         Descriprion: returneaza o lista cu toate filmele din repository-ul de filme
         '''
         return self.__repository.get_all()
+    
+    def findByID(self, ID):
+        '''
+        Description: returneaza clientul cu ID-ul dat
+        
+        In:
+            - ID - numar intreg
+        
+        Out:
+            - movie - filmul cautat
+        '''
+        return self.__repository.getItem(ID)
     
     def add_movie(self, title, description, genre):
         '''

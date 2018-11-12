@@ -20,7 +20,7 @@ class ClientController:
         '''
         return self.__repository.get_all()
     
-    def get_client(self, ID):
+    def findByID(self, ID):
         '''
         Description: returneaza clientul cu ID-ul dat
         

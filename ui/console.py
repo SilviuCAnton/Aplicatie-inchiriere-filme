@@ -16,20 +16,22 @@ class Console:
         
         self.__submenuClient = {1: (self.__uiAddClient, "Adaugati un client"),
                                 2: (self.__uiGetAllClients, "Afisare clientii"),
-                                3: (self.__uiDeleteClient, "Stergeti un client"),
-                                4: (self.__uiModifyClient, "Modificati un client"),
-                                5: (self.__uiModifyClientName, "Modificati numele unui client"),
-                                6: (self.__uiModifyClientCNP, "Modificati CNP-ul unui client"),
-                                7: (self.__uiNumberOfClients, "Afisare numar clienti")}
+                                3: (self.__uiFindClientByID, "Gaseste client dupa ID"),
+                                4: (self.__uiDeleteClient, "Stergeti un client"),
+                                5: (self.__uiModifyClient, "Modificati un client"),
+                                6: (self.__uiModifyClientName, "Modificati numele unui client"),
+                                7: (self.__uiModifyClientCNP, "Modificati CNP-ul unui client"),
+                                8: (self.__uiNumberOfClients, "Afisare numar clienti")}
         
         self.__submenuMovie = {1: (self.__uiAddMovie, "Adaugati un film"),
                                2: (self.__uiGetAllMovies, "Afisare filme"),
-                               3: (self.__uiDeleteMovie, "Stergeti un film"),
-                               4: (self.__uiModifyMovie, "Modificati un film"),
-                               5: (self.__uiModifyMovieTitle, "Modificati titlul unui film"),
-                               6: (self.__uiModifyMovieDescription, "Modificati descrierea unui film"),
-                               7: (self.__uiModifyMovieGenre, "Modificati genul unui film"),
-                               8: (self.__uiNumberOfMovies, "Afisare numar filme")}
+                               3: (self.__uiFindMovieByID, "Gaseste film dupa ID"),
+                               4: (self.__uiDeleteMovie, "Stergeti un film"),
+                               5: (self.__uiModifyMovie, "Modificati un film"),
+                               6: (self.__uiModifyMovieTitle, "Modificati titlul unui film"),
+                               7: (self.__uiModifyMovieDescription, "Modificati descrierea unui film"),
+                               8: (self.__uiModifyMovieGenre, "Modificati genul unui film"),
+                               9: (self.__uiNumberOfMovies, "Afisare numar filme")}
         
         self.__mainMenu = {1: (self.__submenuClient, "Operatii clienti"),
                            2: (self.__submenuMovie, "Operatii filme"),
@@ -348,6 +350,46 @@ class Console:
     def __uiNumberOfMovies(self):
         print("Numarul de filme:", self.__movieController.number_of_movies())
         
+    def __uiFindClientByID(self):
+        try:
+            ID = int(input("Id-ul clientului: "))
+            print()
+            print("Clientul cautat:", self.__clientController.findByID(ID))
+            print()
+            sleep(1)
+        
+        except RepositoryError as re:
+            print()
+            print(re)
+            print()
+            sleep(1)
+            
+        except ValueError:
+            print()
+            print("ID trebuie sa fie numar!!!")
+            print()
+            sleep(1)
+            
+    def __uiFindMovieByID(self):
+        try:
+            ID = int(input("Id-ul filmului: "))
+            print()
+            print("Filmul cautat:", self.__movieController.findByID(ID))
+            print()
+            sleep(1)
+        
+        except RepositoryError as re:
+            print()
+            print(re)
+            print()
+            sleep(1)
+            
+        except ValueError:
+            print()
+            print("ID trebuie sa fie numar!!!")
+            print()
+            sleep(1)
+        
     def __generateMenu(self, menu):
         print()
         print("Alegeti una dintre urmatoarele optiuni:")
@@ -359,23 +401,25 @@ class Console:
         while True:
             self.__generateMenu(self.__mainMenu)
         
-            choice1 = int(input("Optiunea dorita: "))
-            
-            if choice1 == 0:
-                print()
-                print("Se inchide aplicatia...")
-                print()
-                sleep(1)
-                return
-        
             try:
+                choice1 = int(input("Optiunea dorita: "))
+            
+                if choice1 == 0:
+                    print()
+                    print("Se inchide aplicatia...")
+                    print()
+                    sleep(1)
+                    return
+        
+            
                 submenu = self.__mainMenu[choice1][0]
                 self.__generateMenu(submenu)
                 choice2 = int(input("Optiunea dorita: "))
                 submenu[choice2][0]()
         
-            except KeyError:
+            except:
                 print()
                 print("Optiunea nu exista!!!")  
-                print()          
+                print()       
+                sleep(1)   
         
