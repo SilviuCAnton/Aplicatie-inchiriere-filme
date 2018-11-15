@@ -17,8 +17,8 @@ class ClientValidator:
     Exceptions:
         - ridica ValidError daca CNP-ul sau numele nu este valid
     '''
-    
-    def validate(self, client):      
+    @staticmethod
+    def validate(client):      
         if not 1000000000000<client.getCNP()< 10000000000000:
             raise ValidError("CNP-ul trebuie sa aiba exact 13 cifre!!!")
         
@@ -35,8 +35,8 @@ class MovieValidator:
     Exceptions:
         - ridica ValidError daca titlul filmului nu e valid
     '''
-    
-    def validate(self, movie):
+    @staticmethod
+    def validate(movie):
         if movie.getTitle() == "":
             raise ValidError("Titlu nu poate fi vid!!!")
         
@@ -48,7 +48,7 @@ class MovieValidator:
         if description[0]. lower() != description[0] or description[0] == " ":
             raise ValidError("Trebuie ca descrierea sa inceapa cu litera mica")
         
-        for ch in range(1, len(description)):
+        for ch in range(1, len(description)-1):
             if not (description[ch].isdigit() or description[ch].isalpha() or description[ch].isspace()):
                 raise ValidError("Toate caracterele trebuie sa fie litere sau cifre")
             

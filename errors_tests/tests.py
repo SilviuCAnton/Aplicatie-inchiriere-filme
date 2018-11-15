@@ -140,11 +140,11 @@ class TestMovie:
         self.__controller.add_movie("Saw", "a movie about a psycho", "Horror")
         assert len(self.__controller.get_all()) == 1
         
-        self.__controller.modify_movie(1, "Saw 2", "a second movie about a psycho", "Horror/Thriller")
-        assert self.__controller.findByID(1).getGenre() == "Horror/Thriller"
+        self.__controller.modify_movie("Saw", "Saw 2", "a second movie about a psycho", "Horror/Thriller")
+        assert self.__controller.findByTitle("Saw 2").getGenre() == "Horror/Thriller"
     
-        self.__controller.modify_movie_description(1, "abc")
-        assert self.__controller.findByID(1).getDescription() == "abc"
+        self.__controller.modify_movie_description("Saw 2", "abc")
+        assert self.__controller.findByTitle("Saw 2").getDescription() == "abc"
         
     def runTests(self):
         self.__testEntity()

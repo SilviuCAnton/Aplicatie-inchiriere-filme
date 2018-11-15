@@ -25,7 +25,7 @@ class Console:
         
         self.__submenuMovie = {1: (self.__uiAddMovie, "Adaugati un film"),
                                2: (self.__uiGetAllMovies, "Afisare filme"),
-                               3: (self.__uiFindMovieByID, "Gaseste film dupa ID"),
+                               3: (self.__uiFindMovieByTitle, "Gaseste film dupa titlu"),
                                4: (self.__uiDeleteMovie, "Stergeti un film"),
                                5: (self.__uiModifyMovie, "Modificati un film"),
                                6: (self.__uiModifyMovieTitle, "Modificati titlul unui film"),
@@ -175,14 +175,14 @@ class Console:
             
     def __uiModifyMovie(self):
         try:
-            ID = int(input("Introduceti id-ul filmului pe care doriti sa il modificati: "))
-            title = input("Introduceti titlul filmului: ")
+            title = input("Introduceti titlul filmului pe care doriti sa il modificati: ")
+            newTitle = input("Introduceti noul titlu al filmului: ")
             description = input("Introduceti descrierea filmului: ")
             genre = input("Introduceti genul/genurile filmului: ")
             
-            self.__movieController.modify_movie(ID, title, description, genre)
+            self.__movieController.modify_movie(title, newTitle, description, genre)
             print()
-            print("Filmul cu id-ul", ID, "a fost modificat")
+            print("Filmul cu titlul", title, "a fost modificat")
             sleep(1)
             
         except RepositoryError as re:
@@ -195,13 +195,7 @@ class Console:
             print()
             print(ve)
             print()
-            sleep(1)
-        
-        except ValueError:
-            print()
-            print("ID trebuie sa fie numar!!!") 
-            print()
-            sleep(1)                 
+            sleep(1)        
             
     def __uiModifyClientName(self):      
         try:
@@ -262,12 +256,12 @@ class Console:
             
     def __uiModifyMovieTitle(self):
         try:
-            ID = int(input("Introduceti id-ul filmului pe care doriti sa il modificati: "))
-            title = input("Introduceti titlul filmului: ")
+            title = input("Introduceti titlul filmului pe care doriti sa il modificati: ")
+            newTitle = input("Introduceti titlul filmului: ")
             
-            self.__movieController.modify_movie_title(ID, title)
+            self.__movieController.modify_movie_title(title, newTitle)
             print()
-            print("Filmul cu id-ul", ID, "a fost modificat")
+            print("Titlul filmului", title, "a fost modificat in", newTitle)
             sleep(1)
             
         except RepositoryError as re:
@@ -281,21 +275,15 @@ class Console:
             print(ve)
             print()
             sleep(1)
-            
-        except ValueError:
-            print()
-            print("ID trebuie sa fie numar!!!") 
-            print()
-            sleep(1)    
-    
+
     def __uiModifyMovieDescription(self):
         try:
-            ID = int(input("Introduceti id-ul filmului pe care doriti sa il modificati: "))
+            title = input("Introduceti titlul filmului pe care doriti sa il modificati: ")
             description = input("Introduceti descrierea filmului: ")
             
-            self.__movieController.modify_movie_description(ID, description)
+            self.__movieController.modify_movie_description(title, description)
             print()
-            print("Filmul cu id-ul", ID, "a fost modificat")
+            print("Filmul cu titlul", title, "a fost modificat")
             sleep(1)
             
         except RepositoryError as re:
@@ -309,21 +297,15 @@ class Console:
             print(ve)
             print()    
             sleep(1)
-            
-        except ValueError:
-            print()
-            print("ID trebuie sa fie numar!!!") 
-            print()
-            sleep(1)
     
     def __uiModifyMovieGenre(self):
         try:
-            ID = int(input("Introduceti id-ul filmului pe care doriti sa il modificati: "))
+            title = input("Introduceti titlul filmului pe care doriti sa il modificati: ")
             genre = input("Introduceti genul/genurile filmului: ")
             
-            self.__movieController.modify_movie_genre(ID, genre)
+            self.__movieController.modify_movie_genre(title, genre)
             print()
-            print("Filmul cu id-ul", ID, "a fost modificat")
+            print("Filmul cu titlul", title, "a fost modificat")
             sleep(1)
             
         except RepositoryError as re:
@@ -337,12 +319,6 @@ class Console:
             print(ve)
             print() 
             sleep(1)
-            
-        except ValueError:
-            print()
-            print("ID trebuie sa fie numar!!!") 
-            print()
-            sleep(1)   
     
     def __uiNumberOfClients(self):
         print("Numarul de clienti:", self.__clientController.number_of_clients())
@@ -370,23 +346,17 @@ class Console:
             print()
             sleep(1)
             
-    def __uiFindMovieByID(self):
+    def __uiFindMovieByTitle(self):
         try:
-            ID = int(input("Id-ul filmului: "))
+            title = input("Titlul filmului: ")
             print()
-            print("Filmul cautat:", self.__movieController.findByID(ID))
+            print("Filmul cautat:", self.__movieController.findByTitle(title))
             print()
             sleep(1)
         
         except RepositoryError as re:
             print()
             print(re)
-            print()
-            sleep(1)
-            
-        except ValueError:
-            print()
-            print("ID trebuie sa fie numar!!!")
             print()
             sleep(1)
         

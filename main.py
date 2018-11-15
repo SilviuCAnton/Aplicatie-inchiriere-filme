@@ -12,14 +12,15 @@ from domain.validators import ClientValidator, MovieValidator
 from ui.console import Console
 from errors_tests.tests import TestClient, TestMovie
 
+if __name__ == '__main__':
+    testClient = TestClient()
+    testMovie = TestMovie()
+    
+    testClient.runTests()
+    testMovie.runTests()
 
-testClient = TestClient()
-testMovie = TestMovie()
-testClient.runTests()
-testMovie.runTests()
+    clientController = ClientController(MemoryRepository(ClientValidator()))
+    movieController = MovieController(MemoryRepository(MovieValidator()))
 
-clientController = ClientController(MemoryRepository(ClientValidator()))
-movieController = MovieController(MemoryRepository(MovieValidator()))
-
-console = Console(clientController, movieController)
-console.run()
+    console = Console(clientController, movieController)
+    console.run()

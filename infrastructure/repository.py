@@ -29,7 +29,7 @@ class MemoryRepository:
     
     def getItem(self, ID):
         if ID not in self.__items.keys():
-            raise RepositoryError("Nu exista id-ul cautat!!!")
+            raise RepositoryError("Nu exista elementul cautat!!!")
         return self.__items[ID]
     
     def update(self, item):
@@ -38,4 +38,20 @@ class MemoryRepository:
         
     def size(self):
         return len(self.__items)
+    
+
+class FileRepository:
+    
+    def __init__(self, fileName, validator):
+        self.__fileName = fileName
+        self.__validator = validator
+        
+    def get_all(self):
+        elementList = []
+        with open(self.__fileName, 'r') as file:
+            for line in file:
+                pass
+                #create object
+                #elementList.append(object)
+        return elementList
     

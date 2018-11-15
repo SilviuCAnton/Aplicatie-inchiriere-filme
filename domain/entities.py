@@ -73,3 +73,21 @@ class Client:
     def __repr__(self):
         return "#{} {}".format(self.getID(), self.getName())
     
+    
+class Inchiriere:
+    
+    def __init__(self, client, movie, date):
+        self.__client = client
+        self.__movie = movie
+        self.__date = date
+    
+    def getClient(self):
+        return self.__client
+    
+    def getMovie(self):
+        return self.__movie
+    
+    def getDate(self):
+        return self.__date
+    
+    
