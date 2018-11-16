@@ -39,7 +39,7 @@ class MemoryRepository:
     def size(self):
         return len(self.__items)
     
-
+'''
 class FileRepository:
     
     def __init__(self, fileName, validator):
@@ -50,8 +50,9 @@ class FileRepository:
         elementList = []
         with open(self.__fileName, 'r') as file:
             for line in file:
-                pass
-                #create object
+       # fileString = file.readline()
+            
+                
                 #elementList.append(object)
         return elementList
-    
+    '''

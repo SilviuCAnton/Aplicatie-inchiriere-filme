@@ -74,7 +74,7 @@ class Client:
         return "#{} {}".format(self.getID(), self.getName())
     
     
-class Inchiriere:
+class Rent:
     
     def __init__(self, client, movie, date):
         self.__client = client
