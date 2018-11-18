@@ -107,5 +107,8 @@ class ClientController:
         self.__repository.update(client)
             
     def number_of_clients(self):
+        '''
+        Description: returneaza numarul de clienti
+        '''
         return self.__repository.size()
         

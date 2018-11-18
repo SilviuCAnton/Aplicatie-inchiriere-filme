@@ -10,12 +10,13 @@ from time import sleep
 
 class Console:
     
-    def __init__(self, clientController, movieController):
+    def __init__(self, clientController, movieController, rentController):
         self.__clientController = clientController
         self.__movieController = movieController
+        self.__rentController = rentController
         
         self.__submenuClient = {1: (self.__uiAddClient, "Adaugati un client"),
-                                2: (self.__uiGetAllClients, "Afisare clientii"),
+                                2: (self.__uiPrintAllClients, "Afisare clientii"),
                                 3: (self.__uiFindClientByID, "Gaseste client dupa ID"),
                                 4: (self.__uiDeleteClient, "Stergeti un client"),
                                 5: (self.__uiModifyClient, "Modificati un client"),
@@ -24,7 +25,7 @@ class Console:
                                 8: (self.__uiNumberOfClients, "Afisare numar clienti")}
         
         self.__submenuMovie = {1: (self.__uiAddMovie, "Adaugati un film"),
-                               2: (self.__uiGetAllMovies, "Afisare filme"),
+                               2: (self.__uiPrintAllMovies, "Afisare filme"),
                                3: (self.__uiFindMovieByTitle, "Gaseste film dupa titlu"),
                                4: (self.__uiDeleteMovie, "Stergeti un film"),
                                5: (self.__uiModifyMovie, "Modificati un film"),
@@ -33,8 +34,14 @@ class Console:
                                8: (self.__uiModifyMovieGenre, "Modificati genul unui film"),
                                9: (self.__uiNumberOfMovies, "Afisare numar filme")}
         
+        self.__submenuInchirieri = {1: (self.__uiAddRent, "Adaugati o inchiriere"),
+                                    2: (self.__uiPrintAllRents, "Afisare inchirieri"),
+                                    3: (self.__uiRentReturn, "Returnare film"),
+                                    4: (self.__uiNumberOfRents, "Numar de inchirieri")}
+        
         self.__mainMenu = {1: (self.__submenuClient, "Operatii clienti"),
                            2: (self.__submenuMovie, "Operatii filme"),
+                           3: (self.__submenuInchirieri, "Operatii inchirieri"),
                            0: (None, "Inchideti aplicatia")}
         
     def __uiAddMovie(self):
@@ -61,7 +68,6 @@ class Console:
             sleep(1)
         
     def __uiAddClient(self):
-        
         try:
             firstName = input("Introduceti prenumele: ")
             lastName = input("Introduceti numele de familie: ")
@@ -91,24 +97,73 @@ class Console:
             print()
             sleep(1)
             
-    def __uiGetAllClients(self):
+    def __uiAddRent(self):
+        try:
+            self.__uiPrintAllClients()
+            idClient = int(input("Introduceti ID-ul clientului: "))
+            client = self.__clientController.findByID(idClient)
+
+            self.__uiPrintAllMovies()
+            title = input("Introcueti titlul filmului: ")
+            movie = self.__movieController.findByTitle(title)
+            
+            self.__rentController.add_rent(client, movie)
+            
+            print()
+            print("A fost adaugata o noua inchiriere!")
+            print()
+            sleep(1)
+        
+        except RepositoryError as re:
+            print()
+            print(re)
+            print()
+            sleep(1)
+        
+        except ValueError:
+            print()
+            print("ID trebuie sa fie numar!!!")
+            print()
+            sleep(1)
+            
+    def __uiPrintAllClients(self):
+        print('----------------------------------------------------------------------------------------')
+        
         clients = self.__clientController.get_all()
         
         for client in clients:
             print(client)
+            
+        print('----------------------------------------------------------------------------------------')
         
-        sleep(2)
+        sleep(1)
         
-    def __uiGetAllMovies(self):
+    def __uiPrintAllMovies(self):
+        print('----------------------------------------------------------------------------------------')
+        
         movies = self.__movieController.get_all()
         
         for movie in movies:
             print(movie)
             
-        sleep(2)
+        print('----------------------------------------------------------------------------------------')
         
+        sleep(1)
+        
+    def __uiPrintAllRents(self):
+        print('----------------------------------------------------------------------------------------')
+        
+        rents = self.__rentController.get_all()
+        
+        for rent in rents:
+            print(rent)
+            
+        print('----------------------------------------------------------------------------------------')
+        
+        sleep(1)
     def __uiDeleteClient(self):
         try:
+            self.__uiPrintAllClients()
             ID = int(input("Introduceti id-ul clientului pe care doriti sa il stergeti: "))
             self.__clientController.delete_client(ID)
             print()
@@ -127,6 +182,7 @@ class Console:
             
     def __uiDeleteMovie(self):
         try:
+            self.__uiPrintAllMovies()
             ID = int(input("Introduceti id-ul filmului pe care doriti sa il stergeti: "))
             self.__movieController.delete_movie(ID)
             print()
@@ -143,6 +199,29 @@ class Console:
             print()
             sleep(1)
             
+    def __uiRentReturn(self):
+        try:
+            self.__uiPrintAllRents()
+            ID = int(input("Introduceti id-ul contractului de inchiriere: ")) 
+            self.__rentController.rentReturn(ID)
+            
+            print()
+            print("Filmul a fost returnat!")
+            print()
+            sleep(1)
+        
+        except RepositoryError as re:
+            print()
+            print(re)
+            print()
+            sleep(1)     
+            
+        except ValueError:
+            print()
+            print("ID trebuie sa fie numar!!!")
+            print()
+            sleep(1)  
+    
     def __uiModifyClient(self):  
         try:
             ID = int(input("Introduceti id-ul clientului pe care doriti sa il modificati: "))
@@ -321,10 +400,22 @@ class Console:
             sleep(1)
     
     def __uiNumberOfClients(self):
+        print()
         print("Numarul de clienti:", self.__clientController.number_of_clients())
+        print()
+        sleep(1)
         
     def __uiNumberOfMovies(self):
+        print()
         print("Numarul de filme:", self.__movieController.number_of_movies())
+        print()
+        sleep(1)
+        
+    def __uiNumberOfRents(self):
+        print()
+        print("Numarul de inchirieri:", self.__rentController.number_of_rents())
+        print()
+        sleep(1)
         
     def __uiFindClientByID(self):
         try:
@@ -387,9 +478,15 @@ class Console:
                 choice2 = int(input("Optiunea dorita: "))
                 submenu[choice2][0]()
         
-            except:
+            except KeyError:
                 print()
                 print("Optiunea nu exista!!!")  
                 print()       
                 sleep(1)   
+                
+            except ValueError:
+                print()
+                print("Optiunea trebuie sa fie un numar!!!")
+                print()
+                sleep(1)
         

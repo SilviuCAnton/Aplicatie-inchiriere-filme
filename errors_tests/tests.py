@@ -5,12 +5,14 @@ Modul pentru teste
 
 @author: Silviu Anton
 '''
-from domain.entities import Client, Movie
-from domain.validators import ClientValidator, MovieValidator
+from domain.entities import Client, Movie, Rent
+from domain.validators import ClientValidator, MovieValidator, RentValidator
 from infrastructure.repository import MemoryRepository
 from controller.client_controller import ClientController
 from errors_tests.errors import ValidError, RepositoryError
 from controller.movie_controller import MovieController
+from datetime import date
+from controller.rent_controller import RentController
 
 class TestClient:
     
@@ -145,6 +147,70 @@ class TestMovie:
     
         self.__controller.modify_movie_description("Saw 2", "abc")
         assert self.__controller.findByTitle("Saw 2").getDescription() == "abc"
+        
+        assert self.__controller.getIDbyTitle("Saw 2") == 1
+        
+    def runTests(self):
+        self.__testEntity()
+        self.__testValidator()
+        self.__testRepository()
+        self.__testController()
+     
+        
+class TestRent:
+    
+    def __init__(self):
+        self.__ID = 13
+        self.__client = Client(5, "Silviu", "Anton", 1990722170051)
+        self.__movie = Movie(5, "Saw", "a movie about a psycho", "Horror")
+        self.__date = date.today()
+        self.__rent = Rent(self.__ID, self.__client, self.__movie, self.__date)
+        self.__validator = RentValidator()
+        self.__repo = MemoryRepository(self.__validator)
+        self.__controller = RentController(self.__repo)
+        
+    def __testEntity(self):
+        assert self.__rent.getID() == self.__ID
+        
+    def __testValidator(self):
+        pass
+        
+    def __testRepository(self):
+        assert self.__repo.size() == 0
+        self.__repo.store(self.__ID, self.__rent)
+        assert self.__repo.size() == 1
+        
+        try:
+            self.__repo.store(self.__ID, self.__rent)
+            assert False
+            
+        except RepositoryError:
+            assert True
+        
+        assert len(self.__repo.get_all()) == 1
+        
+        assert self.__repo.size() == 1
+           
+        self.__repo.delete(self.__ID)
+        assert self.__repo.size() == 0
+        
+    def __testController(self):
+        self.__controller.add_rent(self.__client, self.__movie)
+        assert len(self.__controller.get_all()) == 1
+        
+        try:
+            self.__controller.add_rent(self.__client, self.__movie)
+            assert False
+        except RepositoryError:
+            assert True
+        
+        assert self.__controller.getIDbyClientAndMovie(self.__client, self.__movie) == 1
+        
+        assert self.__controller.number_of_rents() == 1
+        
+        self.__controller.rentReturn(1)
+        
+        assert self.__controller.number_of_rents() == 0
         
     def runTests(self):
         self.__testEntity()

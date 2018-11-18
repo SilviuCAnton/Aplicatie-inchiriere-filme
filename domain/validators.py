@@ -61,3 +61,15 @@ class MovieValidator:
             elif description[ch] == " " and description[ch+1] != description[ch+1].lower():
                 raise ValidError("Trebuie ca descrierea sa nu inceapa cuvant nou cu litera mare")
                 
+
+class RentValidator:
+    '''
+    Description: Valideaza o inchiriere
+    
+    In: 
+        - rent - inchirierea de validat
+    '''
+    @staticmethod
+    def validate(rent):
+        pass
+    

@@ -59,7 +59,7 @@ class MovieController:
             - genre - genul filmului
         
         Exceptions:
-            - ridica ValueError daca exista deja filmul
+            - ridica RepositoryError daca exista deja filmul
         '''
         try: 
             movie = Movie(self.__nextMovieID, title, description, genre)
@@ -142,5 +142,8 @@ class MovieController:
         self.__repository.update(movie)
             
     def number_of_movies(self):
+        '''
+        Description: returneaza numarul de filme
+        '''
         return self.__repository.size()
         

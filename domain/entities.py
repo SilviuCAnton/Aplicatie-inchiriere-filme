@@ -71,15 +71,22 @@ class Client:
         self.__cnp = CNP
     
     def __repr__(self):
-        return "#{} {}".format(self.getID(), self.getName())
+        return "#{} {}".format(self.__id, self.getName())
     
     
 class Rent:
     
-    def __init__(self, client, movie, date):
+    def __init__(self, ID, client, movie, date):
+        self.__id = ID
         self.__client = client
         self.__movie = movie
         self.__date = date
+    
+    def __eq__(self, otherRent):
+        return self.__client == otherRent.__client and self.__movie == self.__movie
+    
+    def __repr__(self):
+        return "#{} {} - {}, data: {}".format(self.__id, self.__client.getName(), self.__movie.getTitle(), self.__date)
     
     def getClient(self):
         return self.__client
@@ -89,5 +96,9 @@ class Rent:
     
     def getDate(self):
         return self.__date
+    
+    def getID(self):
+        return self.__id
+    
     
     
