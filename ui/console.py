@@ -10,10 +10,10 @@ from time import sleep
 
 class Console:
     
-    def __init__(self, clientController, movieController, rentController):
-        self.__clientController = clientController
-        self.__movieController = movieController
-        self.__rentController = rentController
+    def __init__(self, clientService, movieService, rentService):
+        self.__clientService = clientService
+        self.__movieService = movieService
+        self.__rentService = rentService
         
         self.__submenuClient = {1: (self.__uiAddClient, "Adaugati un client"),
                                 2: (self.__uiPrintAllClients, "Afisare clientii"),
@@ -22,7 +22,8 @@ class Console:
                                 5: (self.__uiModifyClient, "Modificati un client"),
                                 6: (self.__uiModifyClientName, "Modificati numele unui client"),
                                 7: (self.__uiModifyClientCNP, "Modificati CNP-ul unui client"),
-                                8: (self.__uiNumberOfClients, "Afisare numar clienti")}
+                                8: (self.__uiNumberOfClients, "Afisare numar clienti"),
+                                9: (self.__uiGenerateClients, "Generare clienti")}
         
         self.__submenuMovie = {1: (self.__uiAddMovie, "Adaugati un film"),
                                2: (self.__uiPrintAllMovies, "Afisare filme"),
@@ -32,7 +33,8 @@ class Console:
                                6: (self.__uiModifyMovieTitle, "Modificati titlul unui film"),
                                7: (self.__uiModifyMovieDescription, "Modificati descrierea unui film"),
                                8: (self.__uiModifyMovieGenre, "Modificati genul unui film"),
-                               9: (self.__uiNumberOfMovies, "Afisare numar filme")}
+                               9: (self.__uiNumberOfMovies, "Afisare numar filme"),
+                               10: (self.__uiGenerateMovies, "Generare filme")}
         
         self.__submenuInchirieri = {1: (self.__uiAddRent, "Adaugati o inchiriere"),
                                     2: (self.__uiPrintAllRents, "Afisare inchirieri"),
@@ -50,7 +52,7 @@ class Console:
         genre = input("Introduceti genul/genurile filmului: ")
         
         try:
-            self.__movieController.add_movie(title, description, genre)
+            self.__movieService.add_movie(title, description, genre)
             print()
             print("Filmul a fost adaugat!")
             sleep(1)
@@ -74,7 +76,7 @@ class Console:
             CNP = int(input("Introduceti CNP: "))
         
         
-            self.__clientController.add_client(firstName, lastName, CNP)
+            self.__clientService.add_client(firstName, lastName, CNP)
             print()
             print("Clientul a fost adaugat!")
             sleep(1)
@@ -101,13 +103,13 @@ class Console:
         try:
             self.__uiPrintAllClients()
             idClient = int(input("Introduceti ID-ul clientului: "))
-            client = self.__clientController.findByID(idClient)
+            client = self.__clientService.findByID(idClient)
 
             self.__uiPrintAllMovies()
             title = input("Introcueti titlul filmului: ")
-            movie = self.__movieController.findByTitle(title)
+            movie = self.__movieService.findByTitle(title)
             
-            self.__rentController.add_rent(client, movie)
+            self.__rentService.add_rent(client, movie)
             
             print()
             print("A fost adaugat un nou contract de inchiriere!")
@@ -129,7 +131,7 @@ class Console:
     def __uiPrintAllClients(self):
         print('----------------------------------------------------------------------------------------')
         
-        clients = self.__clientController.get_all()
+        clients = self.__clientService.get_all()
         
         for client in clients:
             print(client)
@@ -141,7 +143,7 @@ class Console:
     def __uiPrintAllMovies(self):
         print('----------------------------------------------------------------------------------------')
         
-        movies = self.__movieController.get_all()
+        movies = self.__movieService.get_all()
         
         for movie in movies:
             print(movie)
@@ -153,7 +155,7 @@ class Console:
     def __uiPrintAllRents(self):
         print('----------------------------------------------------------------------------------------')
         
-        rents = self.__rentController.get_all()
+        rents = self.__rentService.get_all()
         
         for rent in rents:
             print(rent)
@@ -165,7 +167,7 @@ class Console:
         try:
             self.__uiPrintAllClients()
             ID = int(input("Introduceti id-ul clientului pe care doriti sa il stergeti: "))
-            self.__clientController.delete_client(ID)
+            self.__clientService.delete_client(ID)
             print()
             print("Clientul a fost sters!")
             sleep(1)
@@ -184,7 +186,7 @@ class Console:
         try:
             self.__uiPrintAllMovies()
             ID = int(input("Introduceti id-ul filmului pe care doriti sa il stergeti: "))
-            self.__movieController.delete_movie(ID)
+            self.__movieService.delete_movie(ID)
             print()
             print("Filmul a fost sters!")
             sleep(1)
@@ -203,7 +205,7 @@ class Console:
         try:
             self.__uiPrintAllRents()
             ID = int(input("Introduceti id-ul contractului de inchiriere: ")) 
-            self.__rentController.rentReturn(ID)
+            self.__rentService.rentReturn(ID)
             
             print()
             print("Filmul a fost returnat!")
@@ -230,7 +232,7 @@ class Console:
             lastName = input("Introduceti numele de familie: ")
             CNP = int(input("Introduceti CNP: "))
             
-            self.__clientController.modify_client(ID, firstName, lastName, CNP)
+            self.__clientService.modify_client(ID, firstName, lastName, CNP)
             print()
             print("Clientul cu id-ul", ID, "a fost modificat")
             sleep(1)
@@ -261,7 +263,7 @@ class Console:
             description = input("Introduceti descrierea filmului: ")
             genre = input("Introduceti genul/genurile filmului: ")
             
-            self.__movieController.modify_movie(title, newTitle, description, genre)
+            self.__movieService.modify_movie(title, newTitle, description, genre)
             print()
             print("Filmul cu titlul", title, "a fost modificat")
             sleep(1)
@@ -285,7 +287,7 @@ class Console:
             firstName = input("Introduceti prenumele: ")
             lastName = input("Introduceti numele de familie: ")
             
-            self.__clientController.modify_client_name(ID, firstName, lastName)
+            self.__clientService.modify_client_name(ID, firstName, lastName)
             print()
             print("Clientul cu id-ul", ID, "a fost modificat")
             sleep(1)
@@ -314,7 +316,7 @@ class Console:
             ID = int(input("Introduceti id-ul clientului pe care doriti sa il modificati: "))
             CNP = int(input("Introduceti CNP: "))
             
-            self.__clientController.modify_client_CNP(ID, CNP)
+            self.__clientService.modify_client_CNP(ID, CNP)
             print()
             print("Clientul cu id-ul", ID, "a fost modificat")
             sleep(1)
@@ -343,7 +345,7 @@ class Console:
             title = input("Introduceti titlul filmului pe care doriti sa il modificati: ")
             newTitle = input("Introduceti titlul filmului: ")
             
-            self.__movieController.modify_movie_title(title, newTitle)
+            self.__movieService.modify_movie_title(title, newTitle)
             print()
             print("Titlul filmului", title, "a fost modificat in", newTitle)
             sleep(1)
@@ -366,7 +368,7 @@ class Console:
             title = input("Introduceti titlul filmului pe care doriti sa il modificati: ")
             description = input("Introduceti descrierea filmului: ")
             
-            self.__movieController.modify_movie_description(title, description)
+            self.__movieService.modify_movie_description(title, description)
             print()
             print("Filmul cu titlul", title, "a fost modificat")
             sleep(1)
@@ -389,7 +391,7 @@ class Console:
             title = input("Introduceti titlul filmului pe care doriti sa il modificati: ")
             genre = input("Introduceti genul/genurile filmului: ")
             
-            self.__movieController.modify_movie_genre(title, genre)
+            self.__movieService.modify_movie_genre(title, genre)
             print()
             print("Filmul cu titlul", title, "a fost modificat")
             sleep(1)
@@ -408,19 +410,19 @@ class Console:
     
     def __uiNumberOfClients(self):
         print()
-        print("Numarul de clienti:", self.__clientController.number_of_clients())
+        print("Numarul de clienti:", self.__clientService.number_of_clients())
         print()
         sleep(1)
         
     def __uiNumberOfMovies(self):
         print()
-        print("Numarul de filme:", self.__movieController.number_of_movies())
+        print("Numarul de filme:", self.__movieService.number_of_movies())
         print()
         sleep(1)
         
     def __uiNumberOfRents(self):
         print()
-        print("Numarul de inchirieri:", self.__rentController.number_of_rents())
+        print("Numarul de inchirieri:", self.__rentService.number_of_rents())
         print()
         sleep(1)
         
@@ -428,7 +430,7 @@ class Console:
         try:
             ID = int(input("Id-ul clientului: "))
             print()
-            print("Clientul cautat:", self.__clientController.findByID(ID))
+            print("Clientul cautat:", self.__clientService.findByID(ID))
             print()
             sleep(1)
         
@@ -448,13 +450,45 @@ class Console:
         try:
             title = input("Titlul filmului: ")
             print()
-            print("Filmul cautat:", self.__movieController.findByTitle(title))
+            print("Filmul cautat:", self.__movieService.findByTitle(title))
             print()
             sleep(1)
         
         except RepositoryError as re:
             print()
             print(re)
+            print()
+            sleep(1)
+        
+    def __uiGenerateClients(self):
+        try:
+            numberOfClients = int(input("Introduceti numarul de clienti ce urmeaza a fi generati: "))
+            self.__clientService.generate_clients(numberOfClients)
+            
+            print()
+            print("Au fost generati", numberOfClients, "clienti!")
+            print()
+            sleep(1)
+        
+        except ValueError as ve:
+            print()
+            print(ve)
+            print()
+            sleep(1)
+            
+    def __uiGenerateMovies(self):
+        try:
+            numberOfMovies = int(input("Introduceti numarul de filme ce urmeaza a fi generate: "))
+            self.__movieService.generate_movies(numberOfMovies)
+            
+            print()
+            print("Au fost generate", numberOfMovies, "filme!")
+            print()
+            sleep(1)
+        
+        except ValueError as ve:
+            print()
+            print(ve)
             print()
             sleep(1)
         

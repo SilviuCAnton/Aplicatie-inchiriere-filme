@@ -5,13 +5,13 @@ Modulul principal al aplicatiei
 
 @author: Silviu Anton
 '''
-from controller.client_controller import ClientController
-from controller.movie_controller import MovieController
+from services.client_service import ClientService
+from services.movie_service import MovieService
 from infrastructure.repository import MemoryRepository
 from domain.validators import ClientValidator, MovieValidator, RentValidator
 from ui.console import Console
 from errors_tests.tests import TestClient, TestMovie, TestRent
-from controller.rent_controller import RentController
+from services.rent_service import RentService
 
 if __name__ == '__main__':
     testClient = TestClient()
@@ -22,9 +22,9 @@ if __name__ == '__main__':
     testMovie.runTests()
     testRent.runTests()
 
-    clientController = ClientController(MemoryRepository(ClientValidator()))
-    movieController = MovieController(MemoryRepository(MovieValidator()))
-    rentController = RentController(MemoryRepository(RentValidator()))
+    clientService = ClientService(MemoryRepository(ClientValidator()))
+    movieService = MovieService(MemoryRepository(MovieValidator()))
+    rentService = RentService(MemoryRepository(RentValidator()))
 
-    console = Console(clientController, movieController, rentController)
+    console = Console(clientService, movieService, rentService)
     console.run()

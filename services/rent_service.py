@@ -9,7 +9,7 @@ from domain.entities import Rent
 from errors_tests.errors import RepositoryError
 from datetime import date
 
-class RentController:
+class RentService:
     
     def __init__(self, repository):
         self.__repository = repository

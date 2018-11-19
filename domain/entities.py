@@ -39,7 +39,7 @@ class Movie:
         self.__genre = genre
     
     def __repr__(self):
-        return "#{} {}, genre: {}".format(self.getID(), self.getTitle(), self.getGenre())
+        return "#{} {} | genre: {} | description: {}".format(self.__id, self.__title, self.__genre, self.__description)
 
 
 class Client:
@@ -71,7 +71,7 @@ class Client:
         self.__cnp = CNP
     
     def __repr__(self):
-        return "#{} {}".format(self.__id, self.getName())
+        return "#{} {}, CNP: {}".format(self.__id, self.getName(), self.__cnp)
     
     
 class Rent:

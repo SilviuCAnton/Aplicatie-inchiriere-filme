@@ -6,9 +6,10 @@ Modul pentru gestionarea clientilor.
 @author: Silviu Anton
 '''
 from domain.entities import Client
-from errors_tests.errors import RepositoryError
+from errors_tests.errors import RepositoryError, ValidError
+from random import randint, choice
 
-class ClientController:
+class ClientService:
     
     def __init__(self, repository):
         self.__repository = repository
@@ -111,4 +112,38 @@ class ClientController:
         Description: returneaza numarul de clienti
         '''
         return self.__repository.size()
+    
+    def generate_clients(self, numberOfClients):
+        '''
+        Description: genereaza si adauga in repository un numar de clienti
         
+        In:
+            - numberOfClients - numarul de clienti
+        
+        Exceptions: ridica ValueError daca numberOfClients nu este un numar natural mai mare decat 0
+        '''
+        if numberOfClients <= 0:
+            raise ValueError("Trebuie introdus un numar valid!!!")
+        
+        while numberOfClients > 0:
+            firstName = ''
+            lastName = ''
+            cnp = randint(1000000000000, 9999999999999)
+            lowerAlpha = 'qwertyuiopasdfghjklzxcvbnm'
+            upperAlpha = 'QWERTYUIOPASDFGHJKLZXCVBNM'
+            firstNameLenght = randint(3, 10)
+            lastNameLenght = randint(3, 10)
+            firstName += choice(upperAlpha)
+            lastName += choice(upperAlpha)
+            
+            for letter in range(firstNameLenght):
+                firstName += choice(lowerAlpha)
+            for letter in range(lastNameLenght):
+                lastName += choice(lowerAlpha)
+            
+            try:
+                numberOfClients -= 1
+                self.add_client(firstName, lastName, cnp)
+            except ValidError:
+                numberOfClients += 1
+                

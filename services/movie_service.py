@@ -6,9 +6,10 @@ Modul pentru gestionarea filmelor
 @author: Silviu Anton
 '''
 from domain.entities import Movie
-from errors_tests.errors import RepositoryError
+from errors_tests.errors import RepositoryError, ValidError
+from random import choice, randint
 
-class MovieController:
+class MovieService:
     
     def __init__(self, repository):
         self.__repository = repository
@@ -147,3 +148,37 @@ class MovieController:
         '''
         return self.__repository.size()
         
+    def generate_movies(self, numberOfMovies):
+        if numberOfMovies <= 0:
+            raise ValueError("Trebuie introdus un numar valid!!!")
+        
+        while numberOfMovies > 0:
+            title = ''
+            description = ''
+            genre = ''
+            lowerAlpha = 'qwertyuiopasdfghjklzxcvbnm '
+            upperAlpha = 'QWERTYUIOPASDFGHJKLZXCVBNM'
+            genreList = ['Horror/', 'Action/', 'Thriller/','Drama/', 'Adventure/', 'Fantasy/', 'Romance/', 'Comedy/']
+            titleLenght = randint(3, 15)
+            lastNameLenght = randint(5, 100)
+            genreLenght = randint(1, 3)
+            title += choice(upperAlpha)
+            description += choice(lowerAlpha)
+            
+            for letter in range(titleLenght):
+                title += choice(lowerAlpha)
+            for letter in range(lastNameLenght):
+                description += choice(lowerAlpha)
+            for randgen in range(genreLenght):
+                randomGenre = choice(genreList)
+                if randomGenre not in genre:
+                    genre += randomGenre
+                else: genreLenght += 1
+            
+            genre = genre[:len(genre)-1]
+                
+            try:
+                numberOfMovies -= 1
+                self.add_movie(title, description, genre)
+            except ValidError:
+                numberOfMovies += 1

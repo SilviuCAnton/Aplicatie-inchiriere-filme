@@ -8,11 +8,11 @@ Modul pentru teste
 from domain.entities import Client, Movie, Rent
 from domain.validators import ClientValidator, MovieValidator, RentValidator
 from infrastructure.repository import MemoryRepository
-from controller.client_controller import ClientController
+from services.client_service import ClientService
 from errors_tests.errors import ValidError, RepositoryError
-from controller.movie_controller import MovieController
+from services.movie_service import MovieService
 from datetime import date
-from controller.rent_controller import RentController
+from services.rent_service import RentService
 
 class TestClient:
     
@@ -29,7 +29,7 @@ class TestClient:
         self.__badCNP = 12654
         self.__badClient = Client(self.__badID, self.__badFirstName, self.__badLastName, self.__badCNP)
         self.__repo = MemoryRepository(self.__validator)
-        self.__controller = ClientController(self.__repo)
+        self.__service = ClientService(self.__repo)
         
     def __testEntity(self):
         assert self.__client.getID() == self.__ID
@@ -68,21 +68,32 @@ class TestClient:
         self.__repo.delete(self.__ID)
         assert self.__repo.size() == 0
         
-    def __testController(self):
-        self.__controller.add_client("Silviu", "Anton", 1990722170051)
-        assert len(self.__controller.get_all()) == 1
+    def __testService(self):
+        self.__service.add_client("Silviu", "Anton", 1990722170051)
+        assert len(self.__service.get_all()) == 1
         
-        self.__controller.modify_client(1, "Constantin", "Anton", 1990722170052)
-        assert self.__controller.findByID(1).getCNP() == 1990722170052
+        self.__service.modify_client(1, "Constantin", "Anton", 1990722170052)
+        assert self.__service.findByID(1).getCNP() == 1990722170052
     
-        self.__controller.modify_client_name(1, "Anton", "Constantin")
-        assert self.__controller.findByID(1).getName() == "Anton Constantin"
+        self.__service.modify_client_name(1, "Anton", "Constantin")
+        assert self.__service.findByID(1).getName() == "Anton Constantin"
+        
+        self.__service.generate_clients(4)
+        assert self.__service.number_of_clients() == 5
+        
+        self.__service.delete_client(5)
+        self.__service.delete_client(4)
+        self.__service.delete_client(3)
+        self.__service.delete_client(2)
+        self.__service.delete_client(1)
+        
+        assert self.__service.number_of_clients() == 0
         
     def runTests(self):
         self.__testEntity()
         self.__testValidator()
         self.__testRepository()
-        self.__testController()
+        self.__testService()
         
         
 class TestMovie:
@@ -100,7 +111,7 @@ class TestMovie:
         self.__badGenre = ""
         self.__badMovie = Movie(self.__badID, self.__badTitle, self.__badDescription, self.__badGenre)
         self.__repo = MemoryRepository(self.__validator)
-        self.__controller = MovieController(self.__repo)
+        self.__service = MovieService(self.__repo)
         
     def __testEntity(self):
         assert self.__movie.getID() == self.__ID
@@ -138,23 +149,23 @@ class TestMovie:
         self.__repo.delete(self.__ID)
         assert self.__repo.size() == 0
         
-    def __testController(self):
-        self.__controller.add_movie("Saw", "a movie about a psycho", "Horror")
-        assert len(self.__controller.get_all()) == 1
+    def __testService(self):
+        self.__service.add_movie("Saw", "a movie about a psycho", "Horror")
+        assert len(self.__service.get_all()) == 1
         
-        self.__controller.modify_movie("Saw", "Saw 2", "a second movie about a psycho", "Horror/Thriller")
-        assert self.__controller.findByTitle("Saw 2").getGenre() == "Horror/Thriller"
+        self.__service.modify_movie("Saw", "Saw 2", "a second movie about a psycho", "Horror/Thriller")
+        assert self.__service.findByTitle("Saw 2").getGenre() == "Horror/Thriller"
     
-        self.__controller.modify_movie_description("Saw 2", "abc")
-        assert self.__controller.findByTitle("Saw 2").getDescription() == "abc"
+        self.__service.modify_movie_description("Saw 2", "abc")
+        assert self.__service.findByTitle("Saw 2").getDescription() == "abc"
         
-        assert self.__controller.getIDbyTitle("Saw 2") == 1
+        assert self.__service.getIDbyTitle("Saw 2") == 1
         
     def runTests(self):
         self.__testEntity()
         self.__testValidator()
         self.__testRepository()
-        self.__testController()
+        self.__testService()
      
         
 class TestRent:
@@ -167,7 +178,7 @@ class TestRent:
         self.__rent = Rent(self.__ID, self.__client, self.__movie, self.__date)
         self.__validator = RentValidator()
         self.__repo = MemoryRepository(self.__validator)
-        self.__controller = RentController(self.__repo)
+        self.__service = RentService(self.__repo)
         
     def __testEntity(self):
         assert self.__rent.getID() == self.__ID
@@ -194,26 +205,26 @@ class TestRent:
         self.__repo.delete(self.__ID)
         assert self.__repo.size() == 0
         
-    def __testController(self):
-        self.__controller.add_rent(self.__client, self.__movie)
-        assert len(self.__controller.get_all()) == 1
+    def __testService(self):
+        self.__service.add_rent(self.__client, self.__movie)
+        assert len(self.__service.get_all()) == 1
         
         try:
-            self.__controller.add_rent(self.__client, self.__movie)
+            self.__service.add_rent(self.__client, self.__movie)
             assert False
         except RepositoryError:
             assert True
         
-        assert self.__controller.getIDbyClientAndMovie(self.__client, self.__movie) == 1
+        assert self.__service.getIDbyClientAndMovie(self.__client, self.__movie) == 1
         
-        assert self.__controller.number_of_rents() == 1
+        assert self.__service.number_of_rents() == 1
         
-        self.__controller.rentReturn(1)
+        self.__service.rentReturn(1)
         
-        assert self.__controller.number_of_rents() == 0
+        assert self.__service.number_of_rents() == 0
         
     def runTests(self):
         self.__testEntity()
         self.__testValidator()
         self.__testRepository()
-        self.__testController()
+        self.__testService()
