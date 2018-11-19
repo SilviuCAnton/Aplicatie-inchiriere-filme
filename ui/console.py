@@ -110,7 +110,7 @@ class Console:
             self.__rentController.add_rent(client, movie)
             
             print()
-            print("A fost adaugata o noua inchiriere!")
+            print("A fost adaugat un nou contract de inchiriere!")
             print()
             sleep(1)
         
@@ -224,6 +224,7 @@ class Console:
     
     def __uiModifyClient(self):  
         try:
+            self.__uiPrintAllClients()
             ID = int(input("Introduceti id-ul clientului pe care doriti sa il modificati: "))
             firstName = input("Introduceti prenumele: ")
             lastName = input("Introduceti numele de familie: ")
@@ -254,6 +255,7 @@ class Console:
             
     def __uiModifyMovie(self):
         try:
+            self.__uiPrintAllMovies()
             title = input("Introduceti titlul filmului pe care doriti sa il modificati: ")
             newTitle = input("Introduceti noul titlu al filmului: ")
             description = input("Introduceti descrierea filmului: ")
@@ -278,6 +280,7 @@ class Console:
             
     def __uiModifyClientName(self):      
         try:
+            self.__uiPrintAllClients()
             ID = int(input("Introduceti id-ul clientului pe care doriti sa il modificati: "))
             firstName = input("Introduceti prenumele: ")
             lastName = input("Introduceti numele de familie: ")
@@ -307,6 +310,7 @@ class Console:
             
     def __uiModifyClientCNP(self): 
         try:
+            self.__uiPrintAllClients()
             ID = int(input("Introduceti id-ul clientului pe care doriti sa il modificati: "))
             CNP = int(input("Introduceti CNP: "))
             
@@ -335,6 +339,7 @@ class Console:
             
     def __uiModifyMovieTitle(self):
         try:
+            self.__uiPrintAllMovies()
             title = input("Introduceti titlul filmului pe care doriti sa il modificati: ")
             newTitle = input("Introduceti titlul filmului: ")
             
@@ -357,6 +362,7 @@ class Console:
 
     def __uiModifyMovieDescription(self):
         try:
+            self.__uiPrintAllMovies()
             title = input("Introduceti titlul filmului pe care doriti sa il modificati: ")
             description = input("Introduceti descrierea filmului: ")
             
@@ -379,6 +385,7 @@ class Console:
     
     def __uiModifyMovieGenre(self):
         try:
+            self.__uiPrintAllMovies()
             title = input("Introduceti titlul filmului pe care doriti sa il modificati: ")
             genre = input("Introduceti genul/genurile filmului: ")
             

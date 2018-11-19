@@ -54,7 +54,7 @@ class RentController:
             rent = Rent(self.__nextRentID, client, movie, todaysDate)
                   
             if rent in self.__repository.get_all():
-                raise RepositoryError("Inchirierea exista deja!!!")
+                raise RepositoryError("Contractul de inchiriere exista deja!!!")
             
             self.__nextRentID += 1
             self.__repository.store(rent.getID(), rent) 
