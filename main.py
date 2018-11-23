@@ -7,11 +7,12 @@ Modulul principal al aplicatiei
 '''
 from services.client_service import ClientService
 from services.movie_service import MovieService
-from infrastructure.repository import MemoryRepository
+from infrastructure.repository import MemoryRepository, FileRepository
 from domain.validators import ClientValidator, MovieValidator, RentValidator
 from ui.console import Console
 from errors_tests.tests import TestClient, TestMovie, TestRent
 from services.rent_service import RentService
+from domain.entities import Client, Movie
 
 if __name__ == '__main__':
     testClient = TestClient()
@@ -22,8 +23,8 @@ if __name__ == '__main__':
     testMovie.runTests()
     testRent.runTests()
 
-    clientService = ClientService(MemoryRepository(ClientValidator()))
-    movieService = MovieService(MemoryRepository(MovieValidator()))
+    clientService = ClientService(FileRepository('clienti.txt', ClientValidator(), Client))
+    movieService = MovieService(FileRepository('filme.txt', MovieValidator(), Movie))
     rentService = RentService(MemoryRepository(RentValidator()))
 
     console = Console(clientService, movieService, rentService)

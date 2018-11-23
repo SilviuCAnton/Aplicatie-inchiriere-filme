@@ -6,14 +6,14 @@ Modul pentru gestionarea filmelor
 @author: Silviu Anton
 '''
 from domain.entities import Movie
-from errors_tests.errors import RepositoryError, ValidError
+from errors_tests.errors import ValidError, DuplicateError, DeletionError
 from random import choice, randint
 
 class MovieService:
     
     def __init__(self, repository):
         self.__repository = repository
-        self.__nextMovieID = 1
+        self.__nextMovieID = self.__repository.getLastID() + 1
     
     def get_all(self):
         '''
@@ -60,13 +60,13 @@ class MovieService:
             - genre - genul filmului
         
         Exceptions:
-            - ridica RepositoryError daca exista deja filmul
+            - ridica DuplicateError daca exista deja filmul
         '''
         try: 
             movie = Movie(self.__nextMovieID, title, description, genre)
                   
             if movie in self.__repository.get_all():
-                raise RepositoryError("Filmul exista deja!!!")
+                raise DuplicateError("Filmul exista deja!!!")
             
             self.__nextMovieID += 1
             self.__repository.store(movie.getID(), movie) 
@@ -78,9 +78,14 @@ class MovieService:
     def delete_movie(self, title):
         '''
         Description: sterge un film din repository-ul de filme
+        
+        Exceptions: ridica DeletionError daca exista un contract cu filmul in cauza
         '''
         ID = self.getIDbyTitle(title)
-        self.__repository.delete(ID)
+        if self.__repository.getItem(ID).getReferenceCounter() == 0:
+            self.__repository.delete(ID)
+        else:
+            raise DeletionError("Exista un contract existent in care filmul este prezent!!!")
         
     def modify_movie(self, title, newTitle, description, genre):
         '''
@@ -149,16 +154,25 @@ class MovieService:
         return self.__repository.size()
         
     def generate_movies(self, numberOfMovies):
+        '''
+        Description: genereaza si adauga in repository un numar de filme
+        
+        In:
+            - numberOfMovies - numarul de filme
+        
+        Exceptions: ridica ValueError daca numberOfMovies nu este un numar natural mai mare decat 0
+        '''
         if numberOfMovies <= 0:
             raise ValueError("Trebuie introdus un numar valid!!!")
         
+        lowerAlpha = 'qwertyuiopasdfghjklzxcvbnm '
+        upperAlpha = 'QWERTYUIOPASDFGHJKLZXCVBNM'
+        genreList = ['Horror/', 'Action/', 'Thriller/','Drama/', 'Adventure/', 'Fantasy/', 'Romance/', 'Comedy/']
+            
         while numberOfMovies > 0:
             title = ''
             description = ''
             genre = ''
-            lowerAlpha = 'qwertyuiopasdfghjklzxcvbnm '
-            upperAlpha = 'QWERTYUIOPASDFGHJKLZXCVBNM'
-            genreList = ['Horror/', 'Action/', 'Thriller/','Drama/', 'Adventure/', 'Fantasy/', 'Romance/', 'Comedy/']
             titleLenght = randint(3, 15)
             lastNameLenght = randint(5, 100)
             genreLenght = randint(1, 3)
@@ -180,5 +194,7 @@ class MovieService:
             try:
                 numberOfMovies -= 1
                 self.add_movie(title, description, genre)
+                
             except ValidError:
                 numberOfMovies += 1
+                

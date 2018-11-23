@@ -6,14 +6,14 @@ Modul pentru gestionarea clientilor.
 @author: Silviu Anton
 '''
 from domain.entities import Client
-from errors_tests.errors import RepositoryError, ValidError
+from errors_tests.errors import ValidError, DuplicateError, DeletionError
 from random import randint, choice
 
 class ClientService:
     
     def __init__(self, repository):
         self.__repository = repository
-        self.__nextClientID = 1
+        self.__nextClientID = self.__repository.getLastID() + 1
     
     def get_all(self):
         '''
@@ -43,12 +43,12 @@ class ClientService:
             - CNP - codul numeric personal al clientului
             
         Exceptions:
-            - ridica RepositoryError daca exista deja clientul
+            - ridica DuplicateError daca exista deja clientul
         '''
         client = Client(self.__nextClientID, firstName, lastName, CNP)
         
         if client in self.__repository.get_all():
-            raise RepositoryError("Clientul deja exista!!!")
+            raise DuplicateError("Clientul deja exista!!!")
         
         try:    
             self.__nextClientID += 1
@@ -61,8 +61,13 @@ class ClientService:
     def delete_client(self, ID):
         '''
         Description: sterge un client din repository-ul de clienti
+        
+        Exceptions: ridica DeletionError daca exsista un contract in care este prezent clientul
         '''
-        self.__repository.delete(ID)
+        if self.__repository.getItem(ID).getReferenceCounter() == 0:
+            self.__repository.delete(ID)
+        else:
+            raise DeletionError("Exista un contract existent in care clientul este prezent!!!")
     
     def modify_client(self, ID, firstName, lastName, CNP):
         '''
@@ -125,12 +130,13 @@ class ClientService:
         if numberOfClients <= 0:
             raise ValueError("Trebuie introdus un numar valid!!!")
         
+        lowerAlpha = 'qwertyuiopasdfghjklzxcvbnm'
+        upperAlpha = 'QWERTYUIOPASDFGHJKLZXCVBNM'
+            
         while numberOfClients > 0:
             firstName = ''
             lastName = ''
             cnp = randint(1000000000000, 9999999999999)
-            lowerAlpha = 'qwertyuiopasdfghjklzxcvbnm'
-            upperAlpha = 'QWERTYUIOPASDFGHJKLZXCVBNM'
             firstNameLenght = randint(3, 10)
             lastNameLenght = randint(3, 10)
             firstName += choice(upperAlpha)
@@ -144,6 +150,7 @@ class ClientService:
             try:
                 numberOfClients -= 1
                 self.add_client(firstName, lastName, cnp)
+                
             except ValidError:
                 numberOfClients += 1
                 

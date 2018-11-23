@@ -13,7 +13,7 @@ class RentService:
     
     def __init__(self, repository):
         self.__repository = repository
-        self.__nextRentID = 1
+        self.__nextRentID = self.__repository.getLastID() + 1
         
     def get_all(self):
         '''
@@ -52,6 +52,9 @@ class RentService:
         try:
             todaysDate = date.today()
             rent = Rent(self.__nextRentID, client, movie, todaysDate)
+            
+            client.incReferenceCounter()
+            movie.incReferenceCounter()
                   
             if rent in self.__repository.get_all():
                 raise RepositoryError("Contractul de inchiriere exista deja!!!")
@@ -70,6 +73,8 @@ class RentService:
         In:
             - ID - id-ul inchirierii
         '''
+        self.__repository.getItem(ID).getClient().decReferenceCounter()
+        self.__repository.getItem(ID).getMovie().decReferenceCounter()
         self.__repository.delete(ID)
     
     def number_of_rents(self):

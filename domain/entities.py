@@ -13,9 +13,22 @@ class Movie:
         self.__title = title
         self.__description = description
         self.__genre = genre
+        self.__referenceCounter = 0
         
     def __eq__(self, otherMovie):
         return self.__title == otherMovie.__title
+    
+    def __repr__(self):
+        return "#{} {} | genre: {} | description: {}".format(self.__id, self.__title, self.__genre, self.__description)
+        
+    def getReferenceCounter(self):
+        return self.__referenceCounter
+    
+    def incReferenceCounter(self):
+        self.__referenceCounter += 1
+        
+    def decReferenceCounter(self):
+        self.__referenceCounter -= 1
     
     def getID(self):
         return self.__id
@@ -23,11 +36,20 @@ class Movie:
     def getTitle(self):
         return self.__title
     
+    def getAttr1(self):
+        return self.getTitle()
+    
     def getDescription(self):
         return self.__description
     
+    def getAttr2(self):
+        return self.getDescription()
+    
     def getGenre(self):
         return self.__genre
+    
+    def getAttr3(self):
+        return self.getGenre()
     
     def setTitle(self, title):
         self.__title = title
@@ -37,9 +59,6 @@ class Movie:
         
     def setGenre(self, genre):
         self.__genre = genre
-    
-    def __repr__(self):
-        return "#{} {} | genre: {} | description: {}".format(self.__id, self.__title, self.__genre, self.__description)
 
 
 class Client:
@@ -49,9 +68,22 @@ class Client:
         self.__firstName = firstName
         self.__lastName = lastName
         self.__cnp = CNP
+        self.__referenceCounter = 0
         
     def __eq__(self, otherClient):
         return self.__cnp == otherClient.__cnp
+    
+    def __repr__(self):
+        return "#{} {}, CNP: {}".format(self.__id, self.getName(), self.__cnp)
+    
+    def getReferenceCounter(self):
+        return self.__referenceCounter
+    
+    def incReferenceCounter(self):
+        self.__referenceCounter += 1
+        
+    def decReferenceCounter(self):
+        self.__referenceCounter -= 1
         
     def getID(self):       
         return self.__id
@@ -60,8 +92,17 @@ class Client:
         fullName = self.__firstName + ' ' + self.__lastName
         return fullName
     
+    def getAttr1(self):
+        return self.__firstName
+    
+    def getAttr2(self):
+        return self.__lastName
+    
     def getCNP(self):
         return self.__cnp
+    
+    def getAttr3(self):
+        return self.getCNP()
     
     def setName(self, firstName, lastName):
         self.__firstName = firstName
@@ -69,9 +110,6 @@ class Client:
         
     def setCNP(self, CNP):
         self.__cnp = CNP
-    
-    def __repr__(self):
-        return "#{} {}, CNP: {}".format(self.__id, self.getName(), self.__cnp)
     
     
 class Rent:
@@ -91,14 +129,29 @@ class Rent:
     def getClient(self):
         return self.__client
     
+    def getAttr1(self):
+        return self.__client.getName()
+    
     def getMovie(self):
         return self.__movie
+    
+    def getAttr2(self):
+        return self.__movie.getTitle()
     
     def getDate(self):
         return self.__date
     
+    def getAttr3(self):
+        return self.getDate()
+    
     def getID(self):
         return self.__id
     
+class RentDTO:
+    
+    def __init__(self, movieTitle, clientName, numberOfRents):
+        self.__movieTitle = movieTitle
+        self.__clientName = clientName
+        self.__numberOfRents = numberOfRents
     
     

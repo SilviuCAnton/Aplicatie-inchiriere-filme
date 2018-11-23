@@ -5,7 +5,7 @@ Modul pentru interactiunea cu utilizatorul
 
 @author: Silviu Anton
 '''
-from errors_tests.errors import RepositoryError, ValidError
+from errors_tests.errors import RepositoryError, ValidError, DeletionError
 from time import sleep
 
 class Console:
@@ -182,11 +182,17 @@ class Console:
             print()
             sleep(1)
             
+        except DeletionError as de:
+            print()
+            print(de)
+            print()
+            sleep(1)
+            
     def __uiDeleteMovie(self):
         try:
             self.__uiPrintAllMovies()
-            ID = int(input("Introduceti id-ul filmului pe care doriti sa il stergeti: "))
-            self.__movieService.delete_movie(ID)
+            title =input("Introduceti id-ul filmului pe care doriti sa il stergeti: ")
+            self.__movieService.delete_movie(title)
             print()
             print("Filmul a fost sters!")
             sleep(1)
@@ -198,6 +204,12 @@ class Console:
         except ValueError:
             print()
             print("ID trebuie sa fie numar!!!") 
+            print()
+            sleep(1)
+            
+        except DeletionError as de:
+            print()
+            print(de)
             print()
             sleep(1)
             

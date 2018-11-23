@@ -11,3 +11,12 @@ class RepositoryError(Exception):
 
 class ValidError(Exception):
     pass
+
+class DuplicateError(RepositoryError):
+    pass
+
+class IdNotFoundError(RepositoryError):
+    pass
+
+class DeletionError(Exception):
+    pass
