@@ -9,7 +9,7 @@ from domain.entities import Client, Movie, Rent
 from domain.validators import ClientValidator, MovieValidator, RentValidator
 from infrastructure.repository import MemoryRepository
 from services.client_service import ClientService
-from errors_tests.errors import ValidError, RepositoryError
+from errors_tests.errors import ValidError, RepositoryError, DuplicateError
 from services.movie_service import MovieService
 from datetime import date
 from services.rent_service import RentService
@@ -88,6 +88,7 @@ class TestClient:
         self.__service.delete_client(1)
         
         assert self.__service.number_of_clients() == 0
+        
         
     def runTests(self):
         self.__testEntity()
@@ -195,7 +196,7 @@ class TestRent:
             self.__repo.store(self.__ID, self.__rent)
             assert False
             
-        except RepositoryError:
+        except DuplicateError:
             assert True
         
         assert len(self.__repo.get_all()) == 1

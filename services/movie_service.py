@@ -62,14 +62,15 @@ class MovieService:
         Exceptions:
             - ridica DuplicateError daca exista deja filmul
         '''
-        try: 
-            movie = Movie(self.__nextMovieID, title, description, genre)
-                  
-            if movie in self.__repository.get_all():
-                raise DuplicateError("Filmul exista deja!!!")
-            
+        self.__nextMovieID = self.__repository.getLastID() + 1
+        movie = Movie(self.__nextMovieID, title, description, genre)
+        
+        if movie in self.__repository.get_all():
+            raise DuplicateError("Filmul deja exista!!!")
+        
+        try:    
             self.__nextMovieID += 1
-            self.__repository.store(movie.getID(), movie) 
+            self.__repository.store(movie.getID(), movie)
             
         except Exception as ex:
             self.__nextMovieID -= 1

@@ -39,7 +39,11 @@ class Console:
         self.__submenuInchirieri = {1: (self.__uiAddRent, "Adaugati o inchiriere"),
                                     2: (self.__uiPrintAllRents, "Afisare inchirieri"),
                                     3: (self.__uiRentReturn, "Returnare film"),
-                                    4: (self.__uiNumberOfRents, "Numar de inchirieri")}
+                                    4: (self.__uiNumberOfRents, "Numar de inchirieri"),
+                                    5: (self.__uiClientsOrderedByName, "Clienti cu filme inchiriate ordonati dupa nume"),
+                                    6: (self.__uiClientsOrderedByNumberOfRents, "Clienti cu filme inchiriate ordonati dupa numarul de filme"),
+                                    7: (self.__uiMostRentedMovies, "Cele mai inchiriate filme"),
+                                    8: (self.__uiTop30Clients, "Top 30% clienti")}
         
         self.__mainMenu = {1: (self.__submenuClient, "Operatii clienti"),
                            2: (self.__submenuMovie, "Operatii filme"),
@@ -503,6 +507,42 @@ class Console:
             print(ve)
             print()
             sleep(1)
+            
+    def __uiMostRentedMovies(self):
+        mostRentedMovies = self.__rentService.mostRentedMovies()
+        print()
+        print("Cele mai inchiriate filme")
+        for movie in mostRentedMovies:
+            print(self.__rentService.getMovieTitle(movie), '-', self.__rentService.getMovieRents(movie), "inchirieri")
+        print()
+        sleep(1)
+    
+    def __uiClientsOrderedByName(self):
+        clientsOrderedByName = self.__rentService.ClientsOrderedByName()
+        print()
+        print("Clienti cu filme inchiriate(ordonati dupa nume): ")
+        for client in clientsOrderedByName:
+            print(self.__rentService.getClientName(client), '-', self.__rentService.getClientRents(client), "inchirieri")
+        print()
+        sleep(1)
+        
+    def __uiClientsOrderedByNumberOfRents(self):
+        clientsOrderedByNumberOfRents = self.__rentService.ClientsOrderedByNumberOfRents()
+        print()
+        print("Clienti cu filme inchiriate(ordonati dupa numarul de filme inchiriate): ")
+        for client in clientsOrderedByNumberOfRents:
+            print(self.__rentService.getClientName(client), '-', self.__rentService.getClientRents(client), "inchirieri")
+        print()
+        sleep(1)
+            
+    def __uiTop30Clients(self):
+        top30Clients = self.__rentService.Top30Clients()
+        print()
+        print("Top 30% Clienti cu cele mai multe filme inchiriate: ")
+        for client in top30Clients:
+            print(self.__rentService.getClientName(client), '-', self.__rentService.getClientRents(client), "inchirieri")
+        print()
+        sleep(1)
         
     def __generateMenu(self, menu):
         print()

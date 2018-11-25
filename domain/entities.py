@@ -121,7 +121,7 @@ class Rent:
         self.__date = date
     
     def __eq__(self, otherRent):
-        return self.__client == otherRent.__client and self.__movie == self.__movie
+        return self.__client == otherRent.__client and self.__movie == otherRent.__movie
     
     def __repr__(self):
         return "#{} {} - {}, data: {}".format(self.__id, self.__client.getName(), self.__movie.getTitle(), self.__date)
@@ -147,11 +147,23 @@ class Rent:
     def getID(self):
         return self.__id
     
-class RentDTO:
+class StatisticsDTO:
     
-    def __init__(self, movieTitle, clientName, numberOfRents):
-        self.__movieTitle = movieTitle
-        self.__clientName = clientName
-        self.__numberOfRents = numberOfRents
-    
+    def __init__(self, rent):
+        self.__movieTitle = rent.getMovie().getTitle()
+        self.__numberOfRentsPerMovie = rent.getMovie().getReferenceCounter()
+        self.__clientName = rent.getClient().getName()
+        self.__numberOfRentsPerClient = rent.getClient().getReferenceCounter()
+        
+    def getClientName(self):
+        return self.__clientName
+        
+    def getNumberOfRentsPerClient(self):
+        return self.__numberOfRentsPerClient
+        
+    def getMovieTitle(self):
+        return self.__movieTitle
+        
+    def getNumberOfRentsPerMovie(self):
+        return self.__numberOfRentsPerMovie
     

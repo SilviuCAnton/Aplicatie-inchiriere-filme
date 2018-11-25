@@ -11,9 +11,9 @@ from random import randint, choice
 
 class ClientService:
     
-    def __init__(self, repository):
+    def __init__(self, repository):  
         self.__repository = repository
-        self.__nextClientID = self.__repository.getLastID() + 1
+        self.__nextClientID = 0
     
     def get_all(self):
         '''
@@ -45,6 +45,7 @@ class ClientService:
         Exceptions:
             - ridica DuplicateError daca exista deja clientul
         '''
+        self.__nextClientID = self.__repository.getLastID() + 1
         client = Client(self.__nextClientID, firstName, lastName, CNP)
         
         if client in self.__repository.get_all():
