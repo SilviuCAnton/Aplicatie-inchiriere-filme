@@ -86,6 +86,12 @@ class RentService:
         return self.__repository.size()
     
     def __getDTOList(self):
+        '''
+        Description: returneaza lista de dto pentru inchirieri
+        
+        Out:
+            - dtoList - lista de dto(data transfer objects)
+        '''
         dtoList = []
         for rent in self.get_all():
             dto = StatisticsDTO(rent)
@@ -93,6 +99,12 @@ class RentService:
         return dtoList
     
     def mostRentedMovies(self):
+        '''
+        Description: returneaza lista de filme ordonata descrescator dupa numarul de inchirieri
+        
+        Out:
+            - movieList - lista de filme
+        '''
         dtoList = self.__getDTOList()
         movieRents = {}
         movieList = []
@@ -110,12 +122,24 @@ class RentService:
         return movieList
     
     def getMovieTitle(self, movieTuple):
+        '''
+        Description: returneaza titlul unui film din dto
+        '''
         return movieTuple[0]
     
     def getMovieRents(self, movieTuple):
+        '''
+        Descritpion: returneaza numarul de inchirieri ale unui film din dto
+        '''
         return movieTuple[1]
     
     def __getClientList(self):
+        '''
+        Description: returneaza lista de clienti din dto(data transfer objects)
+        
+        Out: 
+            - clientList - lista de clienti
+        '''
         dtoList = self.__getDTOList()
         clientList = []
         clientRents = {}
@@ -131,6 +155,12 @@ class RentService:
         return clientList
     
     def ClientsOrderedByName(self):
+        '''
+        Description: returneaza lista de clienti ordonata dupa nume
+        
+        Out:
+            - clientList - lista de client
+        '''
         clientList = self.__getClientList()
                              
         clientList.sort(key = lambda x: x[0], reverse = False)
@@ -138,12 +168,24 @@ class RentService:
         return clientList
     
     def getClientName(self, clientTuple):
+        '''
+        Description: returneaza numele unui client din dto
+        '''
         return clientTuple[0]
     
     def getClientRents(self, clientTuple):
+        '''
+        Description: returneaza numarul de inchirieri ale unui client din dto
+        '''
         return clientTuple[1]
     
     def ClientsOrderedByNumberOfRents(self):
+        '''
+        Description: returneaza lista de clienti ordonata dupa numarul de inchirieri
+        
+        Out:
+            - clientList - lista de client
+        '''
         clientList = self.__getClientList()
                              
         clientList.sort(key = lambda x: x[1], reverse = True)
@@ -151,6 +193,12 @@ class RentService:
         return clientList
     
     def Top30Clients(self):
+        '''
+        Description: returneaza lista cu primii 30% clienti cu cele mai multe inchirieri
+        
+        Out:
+            - clientList - lista de clienti
+        '''
         clientList = self.__getClientList()                    
         clientList.sort(key = lambda x: x[1], reverse = True)
         numberOfClietnsDisplayed = int(30/100 * len(clientList))
