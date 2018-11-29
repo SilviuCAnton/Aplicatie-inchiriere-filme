@@ -10,20 +10,13 @@ from services.movie_service import MovieService
 from infrastructure.repository import MemoryRepository, FileRepository
 from domain.validators import ClientValidator, MovieValidator, RentValidator
 from ui.console import Console
-from errors_tests.tests import TestClient, TestMovie, TestRent
 from services.rent_service import RentService
 from domain.entities import Client, Movie
 from errors_tests.errors import DuplicateError
 
-if __name__ == '__main__':
-    testClient = TestClient()
-    testMovie = TestMovie()
-    testRent = TestRent()
-    
-    testClient.runTests()
-    testMovie.runTests()
-    testRent.runTests()
 
+if __name__ == '__main__':
+    
     clientService = ClientService(FileRepository('clienti.txt', ClientValidator(), Client))
     movieService = MovieService(FileRepository('filme.txt', MovieValidator(), Movie))
     rentService = RentService(MemoryRepository(RentValidator()))

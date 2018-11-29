@@ -151,9 +151,8 @@ class StatisticsDTO:
     
     def __init__(self, rent):
         self.__movieTitle = rent.getMovie().getTitle()
-        self.__numberOfRentsPerMovie = rent.getMovie().getReferenceCounter()
         self.__clientName = rent.getClient().getName()
-        self.__numberOfRentsPerClient = rent.getClient().getReferenceCounter()
+        self.__movieGenre = rent.getMovie().getGenre()
         
     def getClientName(self):
         return self.__clientName
@@ -166,4 +165,7 @@ class StatisticsDTO:
         
     def getNumberOfRentsPerMovie(self):
         return self.__numberOfRentsPerMovie
+    
+    def getMovieGenre(self):
+        return self.__movieGenre
     

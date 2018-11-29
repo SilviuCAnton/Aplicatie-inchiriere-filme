@@ -6,7 +6,7 @@ Modul pentru gestionarea inchirierilor
 @author: Silviu Anton
 '''
 from domain.entities import Rent, StatisticsDTO
-from errors_tests.errors import RepositoryError
+from errors_tests.errors import RepositoryError, DuplicateError
 from datetime import date
 
 class RentService:
@@ -57,7 +57,7 @@ class RentService:
             rent = Rent(self.__nextRentID, client, movie, todaysDate)
             
             if rent in self.__repository.get_all():
-                raise RepositoryError("Contractul de inchiriere exista deja!!!")
+                raise DuplicateError("Contractul de inchiriere exista deja!!!")
             
             self.__nextRentID += 1
             self.__repository.store(rent.getID(), rent) 
@@ -85,6 +85,30 @@ class RentService:
         '''
         return self.__repository.size()
     
+    def getMovieTitle(self, movieTuple):
+        '''
+        Description: returneaza titlul unui film din dto
+        '''
+        return movieTuple[0]
+    
+    def getMovieRents(self, movieTuple):
+        '''
+        Descritpion: returneaza numarul de inchirieri ale unui film din dto
+        '''
+        return movieTuple[1]
+    
+    def getClientName(self, clientTuple):
+        '''
+        Description: returneaza numele unui client din dto
+        '''
+        return clientTuple[0]
+    
+    def getClientRents(self, clientTuple):
+        '''
+        Description: returneaza numarul de inchirieri ale unui client din dto
+        '''
+        return clientTuple[1]
+    
     def __getDTOList(self):
         '''
         Description: returneaza lista de dto pentru inchirieri
@@ -97,41 +121,6 @@ class RentService:
             dto = StatisticsDTO(rent)
             dtoList.append(dto)
         return dtoList
-    
-    def mostRentedMovies(self):
-        '''
-        Description: returneaza lista de filme ordonata descrescator dupa numarul de inchirieri
-        
-        Out:
-            - movieList - lista de filme
-        '''
-        dtoList = self.__getDTOList()
-        movieRents = {}
-        movieList = []
-        for dto in dtoList:
-            if dto.getMovieTitle() not in movieRents:
-                movieRents[dto.getMovieTitle()] = 1
-            else:
-                movieRents[dto.getMovieTitle()] += 1
-                
-        for movie in movieRents.keys():
-            movieList.append((movie, movieRents[movie]))
-                             
-        movieList.sort(key = lambda x: x[1], reverse = True)
-            
-        return movieList
-    
-    def getMovieTitle(self, movieTuple):
-        '''
-        Description: returneaza titlul unui film din dto
-        '''
-        return movieTuple[0]
-    
-    def getMovieRents(self, movieTuple):
-        '''
-        Descritpion: returneaza numarul de inchirieri ale unui film din dto
-        '''
-        return movieTuple[1]
     
     def __getClientList(self):
         '''
@@ -154,6 +143,29 @@ class RentService:
             
         return clientList
     
+    def mostRentedMovies(self):
+        '''
+        Description: returneaza lista de filme ordonata descrescator dupa numarul de inchirieri
+        
+        Out:
+            - movieList - lista de filme
+        '''
+        dtoList = self.__getDTOList()
+        movieRents = {}
+        movieList = []
+        for dto in dtoList:
+            if dto.getMovieTitle() not in movieRents:
+                movieRents[dto.getMovieTitle()] = 1
+            else:
+                movieRents[dto.getMovieTitle()] += 1
+                
+        for movie in movieRents.keys():
+            movieList.append((movie, movieRents[movie]))
+                             
+        movieList.sort(key = lambda x: self.getMovieRents(x), reverse = True)
+            
+        return movieList
+    
     def ClientsOrderedByName(self):
         '''
         Description: returneaza lista de clienti ordonata dupa nume
@@ -163,22 +175,10 @@ class RentService:
         '''
         clientList = self.__getClientList()
                              
-        clientList.sort(key = lambda x: x[0], reverse = False)
+        clientList.sort(key = lambda x: self.getClientName(x), reverse = False)
             
         return clientList
-    
-    def getClientName(self, clientTuple):
-        '''
-        Description: returneaza numele unui client din dto
-        '''
-        return clientTuple[0]
-    
-    def getClientRents(self, clientTuple):
-        '''
-        Description: returneaza numarul de inchirieri ale unui client din dto
-        '''
-        return clientTuple[1]
-    
+
     def ClientsOrderedByNumberOfRents(self):
         '''
         Description: returneaza lista de clienti ordonata dupa numarul de inchirieri
@@ -188,7 +188,7 @@ class RentService:
         '''
         clientList = self.__getClientList()
                              
-        clientList.sort(key = lambda x: x[1], reverse = True)
+        clientList.sort(key = lambda x: self.getClientRents(x), reverse = True)
             
         return clientList
     
@@ -200,9 +200,38 @@ class RentService:
             - clientList - lista de clienti
         '''
         clientList = self.__getClientList()                    
-        clientList.sort(key = lambda x: x[1], reverse = True)
+        clientList.sort(key = lambda x: self.getClientRents(x), reverse = True)
         numberOfClietnsDisplayed = int(30/100 * len(clientList))
         if numberOfClietnsDisplayed > 0:
             clientList = clientList[:numberOfClietnsDisplayed]
         return clientList
     
+    def topClientsWithRentedMoviesByGenre(self, genre):
+        '''
+        Description: returneza o lista cu clientii care au inchiriat filme de un anumit gen, ordonati dupa numarul de inchirieri
+        
+        In:
+            - genre - genul filmului
+            
+        Out:
+            - clientList - lista clientilor ce respecta conditia
+        '''
+        dtoList = self.__getDTOList()
+        clientList = []
+        clientRents = {}
+        
+        for dto in dtoList:
+            if genre in dto.getMovieGenre():
+                
+                if dto.getClientName() not in clientRents:
+                    clientRents[dto.getClientName()] = 1
+                else:
+                    clientRents[dto.getClientName()] += 1       
+    
+        for client in clientRents.keys():
+            clientList.append((client, clientRents[client]))
+        
+        clientList.sort(key = lambda x: self.getClientRents(x), reverse = True)
+        
+        return clientList
+        

@@ -43,7 +43,8 @@ class Console:
                                     5: (self.__uiClientsOrderedByName, "Clienti cu filme inchiriate ordonati dupa nume"),
                                     6: (self.__uiClientsOrderedByNumberOfRents, "Clienti cu filme inchiriate ordonati dupa numarul de filme"),
                                     7: (self.__uiMostRentedMovies, "Cele mai inchiriate filme"),
-                                    8: (self.__uiTop30Clients, "Top 30% clienti")}
+                                    8: (self.__uiTop30Clients, "Top 30% clienti"),
+                                    9: (self.__uiTopClientsWithRentedMoviesByGenre, "Top clienti cu filme inchiriate cu un gen dat")}
         
         self.__mainMenu = {1: (self.__submenuClient, "Operatii clienti"),
                            2: (self.__submenuMovie, "Operatii filme"),
@@ -540,6 +541,16 @@ class Console:
         print()
         print("Top 30% Clienti cu cele mai multe filme inchiriate: ")
         for client in top30Clients:
+            print(self.__rentService.getClientName(client), '-', self.__rentService.getClientRents(client), "inchirieri")
+        print()
+        sleep(1)
+        
+    def __uiTopClientsWithRentedMoviesByGenre(self):
+        genre = input("Introduceti genul: ")
+        topClientsWithRentedMoviesByGenre = self.__rentService.topClientsWithRentedMoviesByGenre(genre)
+        print()
+        print("Top clienti ce au inchiriat filme cu genul {}, ordonati dupa nr de inchirieri:".format(genre))
+        for client in topClientsWithRentedMoviesByGenre:
             print(self.__rentService.getClientName(client), '-', self.__rentService.getClientRents(client), "inchirieri")
         print()
         sleep(1)
