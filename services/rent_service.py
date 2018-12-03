@@ -6,7 +6,7 @@ Modul pentru gestionarea inchirierilor
 @author: Silviu Anton
 '''
 from domain.entities import Rent, StatisticsDTO
-from errors_tests.errors import RepositoryError, DuplicateError
+from errors_tests.errors import DuplicateError
 from datetime import date
 
 class RentService:

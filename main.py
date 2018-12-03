@@ -12,7 +12,6 @@ from domain.validators import ClientValidator, MovieValidator, RentValidator
 from ui.console import Console
 from services.rent_service import RentService
 from domain.entities import Client, Movie
-from errors_tests.errors import DuplicateError
 
 
 if __name__ == '__main__':
