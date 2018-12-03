@@ -7,7 +7,7 @@ Modulul principal al aplicatiei
 '''
 from services.client_service import ClientService
 from services.movie_service import MovieService
-from infrastructure.repository import MemoryRepository, FileRepository, RentFileRepository
+from infrastructure.repository import FileRepository, RentFileRepository
 from domain.validators import ClientValidator, MovieValidator, RentValidator
 from ui.console import Console
 from services.rent_service import RentService
@@ -24,18 +24,6 @@ if __name__ == '__main__':
     movieService = MovieService(movieRepository)
     
     rentService = RentService(RentFileRepository('inchirieri.txt', RentValidator(), clientRepository, movieRepository))
-    
-    try:
-        clientService.add_client("s", "s", 1111111111111)
-        clientService.delete_client(1)
-    except DuplicateError:
-        pass
-    
-    try:
-        movieService.add_movie("t", "t", "t")
-        movieService.delete_movie("t")
-    except DuplicateError:
-        pass
 
     console = Console(clientService, movieService, rentService)
     console.run()

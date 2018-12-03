@@ -7,6 +7,7 @@ Modul pentru modul de stocare a datelor (repository)
 '''
 from errors_tests.errors import DuplicateError, IdNotFoundError
 from domain.entities import Client, Rent, Movie
+import datetime
 
 class MemoryRepository:
     
@@ -125,6 +126,17 @@ class FileRepository(MemoryRepository):
             self.__isLoaded = True
         MemoryRepository.update(self, item)
         self.__storeToFile()
+        
+    def getLastID(self):
+        if self.__isLoaded == False:
+            self.__loadFromFile()
+            self.__isLoaded = True
+        
+        maxKey = 0    
+        for key in self._items.keys():
+            if key>maxKey:
+                maxKey = key
+        return maxKey
 
     def __loadFromFile(self):
         with open(self.__fileName, 'r') as file:
@@ -198,6 +210,17 @@ class RentFileRepository(MemoryRepository):
         MemoryRepository.update(self, item)
         self.__storeToFile()
         
+    def getLastID(self):
+        if self.__isLoaded == False:
+            self.__loadFromFile()
+            self.__isLoaded = True
+        
+        maxKey = 0    
+        for key in self._items.keys():
+            if key>maxKey:
+                maxKey = key
+        return maxKey
+        
     def __storeToFile(self):
         with open(self.__fileName, 'w') as file:
             
@@ -235,7 +258,15 @@ class RentFileRepository(MemoryRepository):
         with open(self.__fileName, 'r') as file:
             
             for line in file:
-                rentID, clientID, movieID, date = line.split('|')
+                attrs = line.split('|')
+                rentID = int(attrs[0])
+                clientID = int(attrs[1])
+                movieID = int(attrs[2])
+                
+                dateList = []
+                for item in attrs[3].split('-'):
+                    dateList.append(int(item))
+                date = datetime.date(dateList[0], dateList[1], dateList[2])
                 
                 client, movie = self.__getClientAndMovieFromID(clientID, movieID)
                 
