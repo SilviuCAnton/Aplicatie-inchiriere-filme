@@ -7,7 +7,7 @@ Modulul principal al aplicatiei
 '''
 from services.client_service import ClientService
 from services.movie_service import MovieService
-from infrastructure.repository import MemoryRepository, FileRepository
+from infrastructure.repository import MemoryRepository, FileRepository, RentFileRepository
 from domain.validators import ClientValidator, MovieValidator, RentValidator
 from ui.console import Console
 from services.rent_service import RentService
@@ -17,9 +17,13 @@ from errors_tests.errors import DuplicateError
 
 if __name__ == '__main__':
     
-    clientService = ClientService(FileRepository('clienti.txt', ClientValidator(), Client))
-    movieService = MovieService(FileRepository('filme.txt', MovieValidator(), Movie))
-    rentService = RentService(MemoryRepository(RentValidator()))
+    clientRepository = FileRepository('clienti.txt', ClientValidator(), Client)
+    clientService = ClientService(clientRepository)
+    
+    movieRepository = FileRepository('filme.txt', MovieValidator(), Movie)
+    movieService = MovieService(movieRepository)
+    
+    rentService = RentService(RentFileRepository('inchirieri.txt', RentValidator(), clientRepository, movieRepository))
     
     try:
         clientService.add_client("s", "s", 1111111111111)

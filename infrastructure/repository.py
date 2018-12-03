@@ -6,7 +6,7 @@ Modul pentru modul de stocare a datelor (repository)
 @author: Silviu Anton
 '''
 from errors_tests.errors import DuplicateError, IdNotFoundError
-from domain.entities import Client
+from domain.entities import Client, Rent, Movie
 
 class MemoryRepository:
     
@@ -150,3 +150,96 @@ class FileRepository(MemoryRepository):
                 file.write(str(self._items[key].getAttr3()))
                 file.write('\n')
 
+class RentFileRepository(MemoryRepository):
+    
+    def __init__(self, fileName, validator, clientRepository, movieRepository):
+        MemoryRepository.__init__(self, validator)
+        self.__fileName = fileName
+        self.__isLoaded = False
+        self.__clientRepository = clientRepository
+        self.__movieRepository = movieRepository
+        
+    def get_all(self):
+        if self.__isLoaded == False:
+            self.__loadFromFile()
+            self.__isLoaded = True
+        return MemoryRepository.get_all(self)
+    
+    def delete(self, ID):
+        if self.__isLoaded == False:
+            self.__loadFromFile()
+            self.__isLoaded = True
+        MemoryRepository.delete(self, ID)
+        self.__storeToFile()
+    
+    def getItem(self, ID):
+        if self.__isLoaded == False:
+            self.__loadFromFile()
+            self.__isLoaded = True
+        return MemoryRepository.getItem(self, ID)  
+    
+    def size(self):
+        if self.__isLoaded == False:
+            self.__loadFromFile()
+            self.__isLoaded = True
+        return MemoryRepository.size(self)  
+    
+    def store(self, ID, item):
+        if self.__isLoaded == False:
+            self.__loadFromFile()
+            self.__isLoaded = True
+        MemoryRepository.store(self, ID, item)
+        self.__storeToFile()
+        
+    def update(self, item):
+        if self.__isLoaded == False:
+            self.__loadFromFile()
+            self.__isLoaded = True
+        MemoryRepository.update(self, item)
+        self.__storeToFile()
+        
+    def __storeToFile(self):
+        with open(self.__fileName, 'w') as file:
+            
+            for rentID in self._items:
+                file.write(str(rentID))
+                file.write('|')
+                file.write(str(self._items[rentID].getClient().getID()))
+                file.write('|')
+                file.write(str(self._items[rentID].getMovie().getID()))
+                file.write('|')
+                file.write(str(self._items[rentID].getDate()))
+                file.write('\n')
+
+    def __getClientAndMovieFromID(self, clientID, movieID):
+        
+        nullClient = Client(0, "0", "0", 0)
+        nullMovie = Movie(0, "0", "0", "0")
+        client = nullClient
+        movie = nullMovie
+        
+        for repoClient in self.__clientRepository.get_all():
+            if int(clientID) == int(repoClient.getID()):
+                client = repoClient
+                
+        for repoMovie in self.__movieRepository.get_all():
+            if int(movieID) == int(repoMovie.getID()):
+                movie = repoMovie
+        
+        if client == nullClient or movie == nullMovie:
+            raise IdNotFoundError("Clientul sau filmul din contract nu exista")
+        
+        return client, movie
+                
+    def __loadFromFile(self):
+        with open(self.__fileName, 'r') as file:
+            
+            for line in file:
+                rentID, clientID, movieID, date = line.split('|')
+                
+                client, movie = self.__getClientAndMovieFromID(clientID, movieID)
+                
+                self._items[rentID] = Rent(rentID, client, movie, date)
+                
+                
+        
