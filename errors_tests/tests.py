@@ -43,10 +43,10 @@ class TestClient(unittest.TestCase):
         
     def testRepository(self):
         self.assertEqual(self.__repo.size(), 0) 
-        self.__repo.store(self.__ID, self.__client)
+        self.__repo.store(self.__client)
         self.assertEqual(self.__repo.size(), 1) 
         
-        self.assertRaises(DuplicateError, self.__repo.store, self.__ID, self.__client)
+        self.assertRaises(DuplicateError, self.__repo.store, self.__client)
         
         self.assertEqual(len(self.__repo.get_all()), 1)
         
@@ -104,10 +104,10 @@ class TestMovie(unittest.TestCase):
         
     def testRepository(self):
         self.assertEqual(self.__repo.size(), 0)
-        self.__repo.store(self.__ID, self.__movie)
+        self.__repo.store(self.__movie)
         self.assertEqual(self.__repo.size(), 1)
         
-        self.assertRaises(DuplicateError, self.__repo.store, self.__ID, self.__movie)
+        self.assertRaises(DuplicateError, self.__repo.store, self.__movie)
         
         self.assertEqual(len(self.__repo.get_all()), 1)
         
@@ -151,10 +151,10 @@ class TestRent(unittest.TestCase):
         
     def testRepository(self):
         self.assertEqual(self.__repo.size(), 0)
-        self.__repo.store(self.__ID, self.__rent)
+        self.__repo.store(self.__rent)
         self.assertEqual(self.__repo.size(), 1)
         
-        self.assertRaises(DuplicateError, self.__repo.store, self.__ID, self.__rent)
+        self.assertRaises(DuplicateError, self.__repo.store, self.__rent)
         
         self.assertEqual(len(self.__repo.get_all()), 1)
         

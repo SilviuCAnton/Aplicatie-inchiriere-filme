@@ -191,7 +191,7 @@ class Console:
     def __uiDeleteMovie(self):
         try:
             self.__uiPrintAllMovies()
-            title =input("Introduceti id-ul filmului pe care doriti sa il stergeti: ")
+            title =input("Introduceti titlul filmului pe care doriti sa il stergeti: ")
             self.__movieService.delete_movie(title)
             print()
             print("Filmul a fost sters!")

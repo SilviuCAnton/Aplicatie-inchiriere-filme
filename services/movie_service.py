@@ -70,7 +70,7 @@ class MovieService:
         
         try:    
             self.__nextMovieID += 1
-            self.__repository.store(movie.getID(), movie)
+            self.__repository.store(movie)
             
         except Exception as ex:
             self.__nextMovieID -= 1

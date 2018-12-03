@@ -21,17 +21,17 @@ class MemoryRepository:
         '''
         return list(self._items.values())
     
-    def store(self, ID, item):
+    def store(self, item):
         '''
         Description: memoreaza o entitate in repository
         
         Exceptions: ridica DuplicateError daca exista deja elementul
         '''
-        if ID in self._items:
+        if item.getID() in self._items:
             raise DuplicateError("Elementul exista deja in repository!!!")
         
         self.__validator.validate(item)
-        self._items[ID] = item
+        self._items[item.getID()] = item
         
     def delete(self, ID):
         '''
@@ -80,87 +80,117 @@ class MemoryRepository:
         return maxID
     
 
-class FileRepository(MemoryRepository):
+class FileRepository:
     
     def __init__(self, fileName, validator, Class):
-        MemoryRepository.__init__(self, validator)
+        self.__validator = validator
         self.__fileName = fileName
         self.__class = Class 
         self.__isLoaded = False
         
     def get_all(self):
-        if self.__isLoaded == False:
-            self.__loadFromFile()
-            self.__isLoaded = True
-        return MemoryRepository.get_all(self)
-    
-    def delete(self, ID):
-        if self.__isLoaded == False:
-            self.__loadFromFile()
-            self.__isLoaded = True
-        MemoryRepository.delete(self, ID)
-        self.__storeToFile()
-    
-    def getItem(self, ID):
-        if self.__isLoaded == False:
-            self.__loadFromFile()
-            self.__isLoaded = True
-        return MemoryRepository.getItem(self, ID)  
-    
-    def size(self):
-        if self.__isLoaded == False:
-            self.__loadFromFile()
-            self.__isLoaded = True
-        return MemoryRepository.size(self)  
-    
-    def store(self, ID, item):
-        if self.__isLoaded == False:
-            self.__loadFromFile()
-            self.__isLoaded = True
-        MemoryRepository.store(self, ID, item)
-        self.__storeToFile()
+        '''
+        Description: returneaza o lista cu toate elementele din fisier
+        '''
+        itemList = []
         
-    def update(self, item):
-        if self.__isLoaded == False:
-            self.__loadFromFile()
-            self.__isLoaded = True
-        MemoryRepository.update(self, item)
-        self.__storeToFile()
-        
-    def getLastID(self):
-        if self.__isLoaded == False:
-            self.__loadFromFile()
-            self.__isLoaded = True
-        
-        maxKey = 0    
-        for key in self._items.keys():
-            if key>maxKey:
-                maxKey = key
-        return maxKey
-
-    def __loadFromFile(self):
         with open(self.__fileName, 'r') as file:
-            
             for line in file:
                 attr1, attr2, attr3, attr4 = line.split('|')
                 attr1 = int(attr1)
                 if self.__class == Client:
                     attr4 = int(attr4)
                 myObject = self.__class(attr1, attr2, attr3, attr4)
-                self._items[myObject.getID()] = myObject
-                
-    def __storeToFile(self):
-        with open(self.__fileName, 'w') as file:
+                itemList.append(myObject)
+        return itemList
+    
+    def delete(self, ID):
+        '''
+        Description: sterge un element din fisier
+        '''
+        itemList = self.get_all()
+        
+        with open(self.__fileName, 'w'):
+            pass
+        
+        for item in itemList:
+            if item.getID() != ID:
+                self.__storeToFile(item)
+    
+    def getItem(self, ID):    
+        '''
+        Description: gaseste un element dupa ID din fisier
+        '''
+        itemList = self.get_all()
+        
+        for item in itemList:
+            if item.getID() == ID:
+                return item
+        
+        raise IdNotFoundError("Nu exista elementul cautat!!!")
+    
+    def size(self):
+        '''
+        Description: returneaza cate elemente sunt in fisier
+        '''
+        itemList = self.get_all()
+        return len(itemList)
+    
+    def store(self, item):
+        '''
+        Description: memoreaza un element in fisier
+        '''
+        itemList = self.get_all()    
+        if item in itemList:
+            raise DuplicateError("Elementul exista deja in repository!!!")
+        self.__validator.validate(item)
+        
+        self.__storeToFile(item)
+        
+    def update(self, item):     
+        '''
+        Description: update-aza un element din fisier
+        '''   
+        self.__validator.validate(item)
+        self.delete(item.getID())
+        self.__storeToFile(item)
+        
+    def getLastID(self): 
+        '''
+        Description: returneaza cel mai mare id din fisier
+        '''
+        itemList = self.get_all()
+        maxKey = 0    
+        for item in itemList:
+            if item.getID()>maxKey:
+                maxKey = item.getID()
+        return maxKey
+
+    #def __loadFromFile(self):
+        #with open(self.__fileName, 'r') as file:
             
-            for key in self._items:
-                file.write(str(key))
+            #for line in file:
+                #attr1, attr2, attr3, attr4 = line.split('|')
+                #attr1 = int(attr1)
+                #if self.__class == Client:
+                    #attr4 = int(attr4)
+                #myObject = self.__class(attr1, attr2, attr3, attr4)
+                #self._items[myObject.getID()] = myObject
+
+                
+    def __storeToFile(self, item):
+        with open(self.__fileName, 'a') as file:
+            
+                file.write(str(item.getID()))
                 file.write('|')
-                file.write(str(self._items[key].getAttr1()))
+                file.write(str(item.getAttr1()))
                 file.write('|')
-                file.write(str(self._items[key].getAttr2()))
+                file.write(str(item.getAttr2()))
                 file.write('|')
-                file.write(str(self._items[key].getAttr3()))
-                file.write('\n')
+                file.write(str(item.getAttr3()))
+                if self.__class == Client:
+                    file.write("\n")
+                    
 
 class RentFileRepository(MemoryRepository):
     

@@ -60,7 +60,7 @@ class RentService:
                 raise DuplicateError("Contractul de inchiriere exista deja!!!")
             
             self.__nextRentID += 1
-            self.__repository.store(rent.getID(), rent) 
+            self.__repository.store(rent) 
             
         except Exception as ex:
             client.decReferenceCounter()

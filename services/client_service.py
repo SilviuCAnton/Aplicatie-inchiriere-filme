@@ -53,7 +53,7 @@ class ClientService:
         
         try:    
             self.__nextClientID += 1
-            self.__repository.store(client.getID(), client)
+            self.__repository.store(client)
             
         except Exception as ex:
             self.__nextClientID -= 1
