@@ -16,13 +16,14 @@ from domain.entities import Client, Movie
 
 if __name__ == '__main__':
     
-    clientRepository = FileRepository('clienti.txt', ClientValidator(), Client)
-    clientService = ClientService(clientRepository)
+    clientRepository = FileRepository('clienti.txt', Client)
+    clientService = ClientService(clientRepository, ClientValidator())
     
-    movieRepository = FileRepository('filme.txt', MovieValidator(), Movie)
-    movieService = MovieService(movieRepository)
+    movieRepository = FileRepository('filme.txt', Movie)
+    movieService = MovieService(movieRepository, MovieValidator())
     
-    rentService = RentService(RentFileRepository('inchirieri.txt', RentValidator(), clientRepository, movieRepository))
+    rentRepository = RentFileRepository('inchirieri.txt')
+    rentService = RentService(rentRepository, RentValidator(), clientRepository, movieRepository)
 
     console = Console(clientService, movieService, rentService)
     console.run()

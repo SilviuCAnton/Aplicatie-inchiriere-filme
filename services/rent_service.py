@@ -11,15 +11,26 @@ from datetime import date
 
 class RentService:
     
-    def __init__(self, repository):
+    def __init__(self, repository, validator, clientRepository, movieRepository):
         self.__repository = repository
+        self.__validator = validator
+        self.__clientRepository = clientRepository
+        self.__movieRepository = movieRepository
         self.__nextRentID = self.__repository.getLastID() + 1
         
     def get_all(self):
         '''
         Descriprion: returneaza o lista cu toate inchirierile din repository-ul de inchirieri
         '''
-        return self.__repository.get_all()
+        rentList = []
+        rentTuples =  self.__repository.get_all()
+        for rentTuple in rentTuples:
+            client = self.__clientRepository.getItem(rentTuple[1])
+            movie = self.__movieRepository.getItem(rentTuple[2])
+            rent = Rent(rentTuple[0], client, movie, rentTuple[3])
+            rentList.append(rent)
+        
+        return rentList
     
     def getIDbyClientAndMovie(self, client, movie):
         '''
@@ -32,7 +43,7 @@ class RentService:
         Out:
             - returneaza id-ul inchirierii sau 0 daca inchirierea nu exista in repository
         '''
-        rents = self.__repository.get_all()
+        rents = self.get_all()
         for rent in rents:
             if rent.getClient() == client and rent.getMovie() == movie:
                 return rent.getID()
@@ -50,16 +61,18 @@ class RentService:
             - ridica RepositoryError daca exista deja filmul
         '''
         try:
+            self.__nextRentID = self.__repository.getLastID() + 1
             client.incReferenceCounter()
             movie.incReferenceCounter()
             
             todaysDate = date.today()
             rent = Rent(self.__nextRentID, client, movie, todaysDate)
             
-            if rent in self.__repository.get_all():
+            
+            if rent in self.get_all():
                 raise DuplicateError("Contractul de inchiriere exista deja!!!")
             
-            self.__nextRentID += 1
+            self.__validator.validate(rent)
             self.__repository.store(rent) 
             
         except Exception as ex:
@@ -75,9 +88,13 @@ class RentService:
         In:
             - ID - id-ul inchirierii
         '''
-        self.__repository.getItem(ID).getClient().decReferenceCounter()
-        self.__repository.getItem(ID).getMovie().decReferenceCounter()
-        self.__repository.delete(ID)
+        rents = self.get_all()
+        for rent in rents:
+            if rent.getID() == ID:
+                rent.getClient().decReferenceCounter()
+                rent.getMovie().decReferenceCounter()
+                self.__repository.delete(ID)
+                break
     
     def number_of_rents(self):
         '''

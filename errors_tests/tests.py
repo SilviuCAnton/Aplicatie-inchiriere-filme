@@ -7,7 +7,7 @@ Modul pentru teste
 '''
 from domain.entities import Client, Movie, Rent
 from domain.validators import ClientValidator, MovieValidator, RentValidator
-from infrastructure.repository import MemoryRepository
+from infrastructure.repository import FileRepository, RentFileRepository
 from services.client_service import ClientService
 from errors_tests.errors import ValidError, DuplicateError
 from services.movie_service import MovieService
@@ -29,8 +29,8 @@ class TestClient(unittest.TestCase):
         self.__badLastName = ""
         self.__badCNP = 12654
         self.__badClient = Client(self.__badID, self.__badFirstName, self.__badLastName, self.__badCNP)
-        self.__repo = MemoryRepository(self.__validator)
-        self.__service = ClientService(self.__repo)
+        self.__repo = FileRepository("testClient.txt", Client)
+        self.__service = ClientService(self.__repo, self.__validator)
         
     def testEntity(self):
         self.assertEqual(self.__client.getID(), self.__ID)
@@ -55,6 +55,8 @@ class TestClient(unittest.TestCase):
         self.__repo.delete(self.__ID)
         self.assertEqual(self.__repo.size(), 0)
         
+        self.__repo.clearFile()
+        
     def testService(self):
         self.__service.add_client("Silviu", "Anton", 1990722170051)
         self.assertEqual(len(self.__service.get_all()), 1)
@@ -68,11 +70,7 @@ class TestClient(unittest.TestCase):
         self.__service.generate_clients(4)
         self.assertEqual(self.__service.number_of_clients(), 5)
         
-        self.__service.delete_client(5)
-        self.__service.delete_client(4)
-        self.__service.delete_client(3)
-        self.__service.delete_client(2)
-        self.__service.delete_client(1)
+        self.__repo.clearFile()
         
         self.assertEqual(self.__service.number_of_clients(), 0)       
         
@@ -91,8 +89,8 @@ class TestMovie(unittest.TestCase):
         self.__badDescription = "A moive  about 6 pirates."
         self.__badGenre = ""
         self.__badMovie = Movie(self.__badID, self.__badTitle, self.__badDescription, self.__badGenre)
-        self.__repo = MemoryRepository(self.__validator)
-        self.__service = MovieService(self.__repo)
+        self.__repo = FileRepository("testMovie.txt", Movie)
+        self.__service = MovieService(self.__repo, self.__validator)
         
     def testEntity(self):
         self.assertEqual(self.__movie.getID(), self.__ID)
@@ -116,6 +114,8 @@ class TestMovie(unittest.TestCase):
         self.__repo.delete(self.__ID)
         self.assertEqual(self.__repo.size(), 0)
         
+        self.__repo.clearFile()
+        
     def testService(self):
         self.__service.add_movie("Saw", "a movie about a psycho", "Horror")
         self.assertEqual(len(self.__service.get_all()), 1)
@@ -127,27 +127,37 @@ class TestMovie(unittest.TestCase):
         self.assertEqual(self.__service.findByTitle("Saw 2").getDescription(), "abc")
         
         self.assertEqual(self.__service.getIDbyTitle("Saw 2"), 1)
+        
+        self.__repo.clearFile()
+        
+        self.__service.generate_movies(5)
+        
+        self.assertEqual(self.__service.number_of_movies(), 5)
+        
+        self.__repo.clearFile()
      
        
 class TestRent(unittest.TestCase):
     
     def setUp(self):
         self.__ID = 13
-        self.__client = Client(5, "Silviu", "Anton", 1990722170051)
-        self.__movie = Movie(5, "Saw", "a movie about a psycho", "Horror")
+        self.__client = Client(1, "Silviu", "Anton", 1990722170051)
+        self.__movie = Movie(1, "Saw", "a movie about a psycho", "Horror")
         self.__date = date.today()
         self.__rent = Rent(self.__ID, self.__client, self.__movie, self.__date)
         self.__validator = RentValidator()
-        self.__repo = MemoryRepository(self.__validator)
-        self.__service = RentService(self.__repo)
-        self.__clientService = ClientService(MemoryRepository(ClientValidator()))
-        self.__movieService = MovieService(MemoryRepository(MovieValidator()))
+        self.__repo = RentFileRepository("testRent.txt")
+        self.__movieRepo = FileRepository("testMovie.txt", Movie)
+        self.__clientRepo = FileRepository("testClient.txt", Client)
+        self.__service = RentService(self.__repo, self.__validator, self.__clientRepo, self.__movieRepo)
+        self.__clientService = ClientService(self.__clientRepo, ClientValidator())
+        self.__movieService = MovieService(self.__movieRepo, MovieValidator())
         
     def testEntity(self):
         self.assertEqual(self.__rent.getID(), self.__ID)
         
     def testValidator(self):
-        self.__validator.validate(self.__movie)
+        self.__validator.validate(self.__rent)
         
     def testRepository(self):
         self.assertEqual(self.__repo.size(), 0)
@@ -163,7 +173,11 @@ class TestRent(unittest.TestCase):
         self.__repo.delete(self.__ID)
         self.assertEqual(self.__repo.size(), 0)
         
+        self.__repo.clearFile()
+        
     def testService(self):
+        self.__clientService.add_client("Silviu", "Anton", 1990722170051)
+        self.__movieService.add_movie("Saw", "a movie about a psycho", "Horror")
         self.__service.add_rent(self.__client, self.__movie)
         self.assertEqual(len(self.__service.get_all()), 1)
 
@@ -174,6 +188,8 @@ class TestRent(unittest.TestCase):
         self.assertEqual(self.__service.number_of_rents(), 1)
         
         self.__service.rentReturn(1)
+        self.__clientRepo.clearFile()
+        self.__movieRepo.clearFile()
         
         self.assertEqual(self.__service.number_of_rents(), 0)
         
@@ -194,5 +210,10 @@ class TestRent(unittest.TestCase):
         self.__service.add_rent(self.__clientService.findByID(3), self.__movieService.findByTitle("Saw3")) 
         
         self.assertEqual(self.__service.topClientsWithRentedMoviesByGenre("Adventure"), [("Silviu Anton1", 3),("Silviu Anton2", 2),("Silviu Anton3", 1)])
-    
-unittest.main()
+
+        self.__repo.clearFile()
+        self.__clientRepo.clearFile()
+        self.__movieRepo.clearFile()
+        
+if __name__ == "__main__":    
+    unittest.main()

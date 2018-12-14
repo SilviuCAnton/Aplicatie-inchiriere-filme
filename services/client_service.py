@@ -11,7 +11,8 @@ from random import randint, choice
 
 class ClientService:
     
-    def __init__(self, repository):  
+    def __init__(self, repository, validator):  
+        self.__validator = validator
         self.__repository = repository
         self.__nextClientID = 0
     
@@ -49,15 +50,10 @@ class ClientService:
         client = Client(self.__nextClientID, firstName, lastName, CNP)
         
         if client in self.__repository.get_all():
-            raise DuplicateError("Clientul deja exista!!!")
+                raise DuplicateError("Clientul deja exista!!!") 
         
-        try:    
-            self.__nextClientID += 1
-            self.__repository.store(client)
-            
-        except Exception as ex:
-            self.__nextClientID -= 1
-            raise ex
+        self.__validator.validate(client)    
+        self.__repository.store(client)
         
     def delete_client(self, ID):
         '''
@@ -83,7 +79,8 @@ class ClientService:
         client = self.__repository.getItem(ID)
         client.setName(firstName, lastName)
         client.setCNP(CNP)
-                      
+         
+        self.__validator.validate(client)             
         self.__repository.update(client)
         
     def modify_client_name(self, ID, firstName, lastName):
@@ -98,6 +95,7 @@ class ClientService:
         client = self.__repository.getItem(ID)
         client.setName(firstName, lastName)
         
+        self.__validator.validate(client)
         self.__repository.update(client)
     
     def modify_client_CNP(self, ID, CNP):
@@ -111,6 +109,7 @@ class ClientService:
         client = self.__repository.getItem(ID)
         client.setCNP(CNP)
             
+        self.__validator.validate(client)
         self.__repository.update(client)
             
     def number_of_clients(self):

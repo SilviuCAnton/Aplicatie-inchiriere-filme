@@ -11,7 +11,8 @@ from random import choice, randint
 
 class MovieService:
     
-    def __init__(self, repository):
+    def __init__(self, repository, validator):
+        self.__validator = validator
         self.__repository = repository
         self.__nextMovieID = self.__repository.getLastID() + 1
     
@@ -66,15 +67,11 @@ class MovieService:
         movie = Movie(self.__nextMovieID, title, description, genre)
         
         if movie in self.__repository.get_all():
-            raise DuplicateError("Filmul deja exista!!!")
-        
-        try:    
-            self.__nextMovieID += 1
-            self.__repository.store(movie)
+                raise DuplicateError("Filmul deja exista!!!")
+                     
+        self.__validator.validate(movie)
+        self.__repository.store(movie)
             
-        except Exception as ex:
-            self.__nextMovieID -= 1
-            raise ex
         
     def delete_movie(self, title):
         '''
@@ -103,7 +100,8 @@ class MovieService:
         movie.setTitle(newTitle)
         movie.setGenre(genre)
         movie.setDescription(description)
-            
+        
+        self.__validator.validate(movie)
         self.__repository.update(movie)
         
     def modify_movie_genre(self, title, genre):
@@ -117,7 +115,8 @@ class MovieService:
         ID = self.getIDbyTitle(title)
         movie = self.__repository.getItem(ID)
         movie.setGenre(genre)
-            
+        
+        self.__validator.validate(movie)    
         self.__repository.update(movie)
         
     def modify_movie_description(self, title, description):
@@ -131,7 +130,8 @@ class MovieService:
         ID = self.getIDbyTitle(title)
         movie = self.__repository.getItem(ID)
         movie.setDescription(description)
-            
+        
+        self.__validator.validate(movie)
         self.__repository.update(movie)
         
     def modify_movie_title(self, title, newTitle):
@@ -146,6 +146,7 @@ class MovieService:
         movie = self.__repository.getItem(ID)
         movie.setTitle(newTitle)
             
+        self.__validator.validate(movie)
         self.__repository.update(movie)
             
     def number_of_movies(self):
@@ -196,6 +197,6 @@ class MovieService:
                 numberOfMovies -= 1
                 self.add_movie(title, description, genre)
                 
-            except ValidError:
+            except (ValidError, DuplicateError):
                 numberOfMovies += 1
                 
