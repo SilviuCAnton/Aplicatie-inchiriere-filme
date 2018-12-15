@@ -123,18 +123,25 @@ class FileRepository:
             if item.getID() != ID:
                 self.__storeToFile(item)
     
-    def getItem(self, ID):    
+    def getItem(self, ID, index = 0):    
         '''
-        Description: gaseste un element dupa ID din fisier
+        Description: gaseste un element dupa ID din fisier + implementare recursive
         '''
-        itemList = self.get_all()
-        
-        for item in itemList:
-            if item.getID() == ID:
-                return item
-        
-        raise IdNotFoundError("Nu exista elementul cautat!!!")
+#         itemList = self.get_all()
+#          
+#         for item in itemList:
+#             if item.getID() == ID:
+#                 return item
+#          
+#         raise IdNotFoundError("Nu exista elementul cautat!!!")
     
+        itemList = self.get_all()
+        if index == len(itemList):
+            raise IdNotFoundError("Nu exista elementul cautat!!!")
+        if itemList[index].getID() == ID:
+            return itemList[index]
+        return self.getItem(ID, index+1)
+        
     def size(self):
         '''
         Description: returneaza cate elemente sunt in fisier
@@ -239,11 +246,11 @@ class RentFileRepository:
         Description: gaseste un element dupa ID din fisier
         '''
         rentTuples = self.get_all()
-        
+         
         for rentTuple in rentTuples:
             if rentTuple[0] == ID:
                 return rentTuple
-        
+         
         raise IdNotFoundError("Nu exista elementul cautat!!!")
     
     def size(self):

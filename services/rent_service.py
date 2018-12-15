@@ -6,8 +6,9 @@ Modul pentru gestionarea inchirierilor
 @author: Silviu Anton
 '''
 from domain.entities import Rent, StatisticsDTO
-from errors_tests.errors import DuplicateError
+from errors_tests.errors import DuplicateError, IdNotFoundError
 from datetime import date
+from domain.sorting_algorithms import insertionSort, combSort
 
 class RentService:
     
@@ -81,20 +82,34 @@ class RentService:
             self.__nextRentID -= 1
             raise ex
         
-    def rentReturn(self, ID):
+    def rentReturn(self, ID, index = 0):
         '''
-        Description: returneaza un film deja inchiriat
+        Description: returneaza un film deja inchiriat + implementare recursiva
         
         In:
             - ID - id-ul inchirierii
         '''
+#         rents = self.get_all()
+#         for rent in rents:
+#             if rent.getID() == ID:
+#                 rent.getClient().decReferenceCounter()
+#                 rent.getMovie().decReferenceCounter()
+#                 self.__repository.delete(ID)
+#                 break
+#         else:
+#             raise IdNotFoundError("Nu exista inchiriera cu acest ID!!!")
+
         rents = self.get_all()
-        for rent in rents:
-            if rent.getID() == ID:
-                rent.getClient().decReferenceCounter()
-                rent.getMovie().decReferenceCounter()
+        if index < len(rents):
+            if rents[index].getID() == ID:
+                rents[index].getClient().decReferenceCounter()
+                rents[index].getMovie().decReferenceCounter()
                 self.__repository.delete(ID)
-                break
+            else:
+                self.rentReturn(ID, index+1)
+        else:
+            raise IdNotFoundError("Nu exista inchiriera cu acest ID!!!") 
+        
     
     def number_of_rents(self):
         '''
@@ -179,7 +194,7 @@ class RentService:
         for movie in movieRents.keys():
             movieList.append((movie, movieRents[movie]))
                              
-        movieList.sort(key = lambda x: self.getMovieRents(x), reverse = True)
+        movieList = insertionSort(movieList, key = lambda x: self.getMovieRents(x), reverse = True)
             
         return movieList
     
@@ -192,8 +207,8 @@ class RentService:
         '''
         clientList = self.__getClientList()
                              
-        clientList.sort(key = lambda x: self.getClientName(x), reverse = False)
-            
+        clientList = insertionSort(clientList, key = lambda x: self.getClientName(x), reverse = False)
+        print(clientList)
         return clientList
 
     def ClientsOrderedByNumberOfRents(self):
@@ -205,7 +220,7 @@ class RentService:
         '''
         clientList = self.__getClientList()
                              
-        clientList.sort(key = lambda x: self.getClientRents(x), reverse = True)
+        clientList = combSort(clientList, key = lambda x: self.getClientRents(x), reverse = True)
             
         return clientList
     
@@ -217,7 +232,7 @@ class RentService:
             - clientList - lista de clienti
         '''
         clientList = self.__getClientList()                    
-        clientList.sort(key = lambda x: self.getClientRents(x), reverse = True)
+        clientList = combSort(clientList, key = lambda x: self.getClientRents(x), reverse = True)
         numberOfClietnsDisplayed = int(30/100 * len(clientList))
         if numberOfClietnsDisplayed > 0:
             clientList = clientList[:numberOfClietnsDisplayed]
@@ -248,7 +263,7 @@ class RentService:
         for client in clientRents.keys():
             clientList.append((client, clientRents[client]))
         
-        clientList.sort(key = lambda x: self.getClientRents(x), reverse = True)
+        clientList = combSort(clientList, key = lambda x: self.getClientRents(x), reverse = True)
         
         return clientList
         
