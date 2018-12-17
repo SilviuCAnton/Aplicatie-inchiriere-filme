@@ -125,7 +125,7 @@ class FileRepository:
     
     def getItem(self, ID, index = 0):    
         '''
-        Description: gaseste un element dupa ID din fisier + implementare recursive
+        Description: gaseste un element dupa ID din fisier + implementare recursiva
         '''
 #         itemList = self.get_all()
 #          
@@ -244,6 +244,22 @@ class RentFileRepository:
     def getItem(self, ID):    
         '''
         Description: gaseste un element dupa ID din fisier
+        
+        Analiza complexitatii: 
+        
+            - Caz favorabil: elementul cautat se afla pe prima pozitie in lista
+                
+                T(n) = 1 => ϴ(1)
+                
+            - Caz defavorabil: elementul cautat nu exista in lista
+            
+                T(n) = Sum(from k=1 to n)(1) = n => ϴ(n)
+            
+            - Caz mediu: 
+                
+                T(n) = (1 + 2 + 3 + ... + n)/n = n(n+1)/2n = (n+1)/2  => ϴ(n)
+                
+            - Complexitate generala: O(n)
         '''
         rentTuples = self.get_all()
          
