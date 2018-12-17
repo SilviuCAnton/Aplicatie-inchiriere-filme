@@ -14,6 +14,83 @@ from services.movie_service import MovieService
 from datetime import date
 from services.rent_service import RentService
 import unittest
+from domain.sorting_algorithms import combSort, insertionSort, mergeSort
+from random import randint
+
+class TestSortingAlgorithms(unittest.TestCase):
+
+    def testSmallLists(self):
+        self.assertEqual([], combSort([]))
+        self.assertEqual([], insertionSort([]))
+        self.assertEqual([], mergeSort([]))
+        
+        self.assertEqual([1], combSort([1]))
+        self.assertEqual([1], insertionSort([1]))
+        self.assertEqual([1], mergeSort([1]))
+        
+        self.assertEqual([1, 2, 3], combSort([3, 2, 1]))
+        self.assertEqual([1, 2, 3], insertionSort([3, 2, 1]))
+        self.assertEqual([1, 2, 3], mergeSort([3, 2, 1]))
+   
+        self.assertEqual([1, 1, 1], combSort([1, 1, 1]))
+        self.assertEqual([1, 1, 1], insertionSort([1, 1, 1]))
+        self.assertEqual([1, 1, 1], mergeSort([1, 1, 1]))
+        
+        self.assertEqual([1, 2, 3], combSort([1, 2, 3]))
+        self.assertEqual([1, 2, 3], insertionSort([1, 2, 3]))
+        self.assertEqual([1, 2, 3], mergeSort([1, 2, 3]))
+        
+    def testBigLists(self):
+        myBigList = []
+        for i in range(20):
+            numberOfElements = randint(500, 1000)
+            for item in range(numberOfElements):
+                myBigList.append(randint(1,500))
+            
+            self.assertEqual(sorted(myBigList), combSort(myBigList))
+            self.assertEqual(sorted(myBigList), insertionSort(myBigList))
+            self.assertEqual(sorted(myBigList), mergeSort(myBigList))
+            myBigList = []
+            
+        for i in range(20):
+            numberOfElements = randint(500, 1000)
+            for item in range(numberOfElements):
+                myBigList.append(randint(1,500))
+            
+            self.assertEqual(sorted(myBigList, key = lambda x: -x), combSort(myBigList, key = lambda x: -x))
+            self.assertEqual(sorted(myBigList, key = lambda x: -x), insertionSort(myBigList, key = lambda x: -x))
+            self.assertEqual(sorted(myBigList, key = lambda x: -x), mergeSort(myBigList, key = lambda x: -x))
+            myBigList = []
+            
+        for i in range(20):
+            numberOfElements = randint(500, 1000)
+            for item in range(numberOfElements):
+                myBigList.append(randint(1,500))
+            
+            self.assertEqual(sorted(myBigList, reverse = True), combSort(myBigList, reverse = True))
+            self.assertEqual(sorted(myBigList, reverse = True), insertionSort(myBigList, reverse = True))
+            self.assertEqual(sorted(myBigList, reverse = True), mergeSort(myBigList, reverse = True))
+            myBigList = []
+            
+        for i in range(20):
+            numberOfElements = randint(500, 1000)
+            for item in range(numberOfElements):
+                myBigList.append(randint(1,500))
+            
+            self.assertEqual(sorted(myBigList, reverse = True), combSort(myBigList, cmp = lambda x, y: y - x))
+            self.assertEqual(sorted(myBigList, reverse = True), insertionSort(myBigList, cmp = lambda x, y: y - x))
+            self.assertEqual(sorted(myBigList, reverse = True), mergeSort(myBigList, cmp = lambda x, y: y - x))
+            myBigList = []
+            
+        for i in range(20):
+            numberOfElements = randint(500, 1000)
+            for item in range(numberOfElements):
+                myBigList.append(randint(1,500))
+            
+            self.assertEqual(sorted(myBigList), combSort(myBigList, key = lambda x: -x, cmp = lambda x, y: y - x))
+            self.assertEqual(sorted(myBigList), insertionSort(myBigList, key = lambda x: -x, cmp = lambda x, y: y - x))
+            self.assertEqual(sorted(myBigList), mergeSort(myBigList, key = lambda x: -x, cmp = lambda x, y: y - x))
+            myBigList = []
 
 class TestClient(unittest.TestCase):
     
