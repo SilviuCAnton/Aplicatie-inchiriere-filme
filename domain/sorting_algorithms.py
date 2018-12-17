@@ -7,7 +7,7 @@ Modul pentru algoritmii de sortare
 '''
 from copy import deepcopy
 
-def insertionSort(lst, *, key = lambda x: x, cmp = lambda x, y: x - y, reverse = False):
+def insertionSort(lst, *, key = lambda x: x, cmp = lambda x, y: -1 if x < y else 1, reverse = False):
     '''
     Descritpion: sorteaza o lista folosind algoritmul Insertion Sort si returneaza lista sortata
     
@@ -17,7 +17,8 @@ def insertionSort(lst, *, key = lambda x: x, cmp = lambda x, y: x - y, reverse =
         - cmp - criteriul de comparatie
         - reverse - specifica daca sortarea se face invers sau nu
     
-    Out: result - lista rezultat
+    Out: 
+        - result - lista rezultat
     '''
     result = deepcopy(lst)
     
@@ -42,7 +43,7 @@ def __getNextGap(gap):
         return 1
     return gap 
 
-def combSort(lst, *, key = lambda x: x, cmp = lambda x, y: x - y, reverse = False):
+def combSort(lst, *, key = lambda x: x, cmp = lambda x, y: -1 if x < y else 1, reverse = False):
     '''
     Descritpion: sorteaza o lista folosind algoritmul Comb Sort si returneaza lista sortata
     
@@ -52,7 +53,8 @@ def combSort(lst, *, key = lambda x: x, cmp = lambda x, y: x - y, reverse = Fals
         - cmp - criteriul de comparatie
         - reverse - specifica daca sortarea se face invers sau nu
     
-    Out: result - lista rezultat
+    Out: 
+        - result - lista rezultat
     '''
     result = deepcopy(lst)
     lenght = len(result) 
@@ -76,7 +78,19 @@ def combSort(lst, *, key = lambda x: x, cmp = lambda x, y: x - y, reverse = Fals
         
     return result
 
-def mergeSort(lst, key = lambda x: x, cmp = lambda x, y: x - y, reverse = False):
+def mergeSort(lst, key = lambda x: x, cmp = lambda x, y: -1 if x < y else 1, reverse = False):
+    '''
+    Descritpion: sorteaza o lista folosind algoritmul Comb Sort si returneaza lista sortata
+    
+    In: 
+        - lst - lista
+        - key - cheia dupa care se face sortarea
+        - cmp - criteriul de comparatie
+        - reverse - specifica daca sortarea se face invers sau nu
+    
+    Out: 
+        - myList - lista rezultat
+    '''
     myList = deepcopy(lst)
     
     def helper(arr): 

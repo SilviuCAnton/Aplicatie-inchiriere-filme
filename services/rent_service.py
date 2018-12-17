@@ -8,7 +8,7 @@ Modul pentru gestionarea inchirierilor
 from domain.entities import Rent, StatisticsDTO
 from errors_tests.errors import DuplicateError, IdNotFoundError
 from datetime import date
-from domain.sorting_algorithms import insertionSort, combSort
+from domain.sorting_algorithms import mergeSort
 
 class RentService:
     
@@ -194,7 +194,7 @@ class RentService:
         for movie in movieRents.keys():
             movieList.append((movie, movieRents[movie]))
                              
-        movieList = insertionSort(movieList, key = lambda x: self.getMovieRents(x), reverse = True)
+        movieList = mergeSort(movieList, key = lambda x: self.getMovieRents(x), reverse = True)
             
         return movieList
     
@@ -207,8 +207,8 @@ class RentService:
         '''
         clientList = self.__getClientList()
                              
-        clientList = insertionSort(clientList, key = lambda x: self.getClientName(x), reverse = False)
-        print(clientList)
+        clientList = mergeSort(clientList, key = lambda x: self.getClientName(x), reverse = False)
+        
         return clientList
 
     def ClientsOrderedByNumberOfRents(self):
@@ -220,7 +220,7 @@ class RentService:
         '''
         clientList = self.__getClientList()
                              
-        clientList = combSort(clientList, key = lambda x: self.getClientRents(x), reverse = True)
+        clientList = mergeSort(clientList, key = lambda x: self.getClientRents(x), reverse = True)
             
         return clientList
     
@@ -232,7 +232,7 @@ class RentService:
             - clientList - lista de clienti
         '''
         clientList = self.__getClientList()                    
-        clientList = combSort(clientList, key = lambda x: self.getClientRents(x), reverse = True)
+        clientList = mergeSort(clientList, key = lambda x: self.getClientRents(x), reverse = True)
         numberOfClietnsDisplayed = int(30/100 * len(clientList))
         if numberOfClietnsDisplayed > 0:
             clientList = clientList[:numberOfClietnsDisplayed]
@@ -263,7 +263,7 @@ class RentService:
         for client in clientRents.keys():
             clientList.append((client, clientRents[client]))
         
-        clientList = combSort(clientList, key = lambda x: self.getClientRents(x), reverse = True)
+        clientList = mergeSort(clientList, key = lambda x: self.getClientRents(x), reverse = True)
         
         return clientList
         

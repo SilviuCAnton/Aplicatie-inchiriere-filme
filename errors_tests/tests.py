@@ -292,5 +292,7 @@ class TestRent(unittest.TestCase):
         self.__clientRepo.clearFile()
         self.__movieRepo.clearFile()
         
+        
 if __name__ == "__main__":    
     unittest.main()
+    
