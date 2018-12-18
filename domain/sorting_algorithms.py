@@ -59,17 +59,16 @@ def combSort(lst, *, key = lambda x: x, cmp = lambda x, y: -1 if x < y else 1, r
     result = deepcopy(lst)
     lenght = len(result) 
   
-    gap = lenght
+    gap = lenght 
   
     swapped = True
   
-    while gap != 1 or swapped == True: 
+    while gap !=1 or swapped == 1: 
         gap = __getNextGap(gap) 
-  
         swapped = False
-  
-        for i in range(0, lenght - gap): 
-            if cmp(key(result[i]), key(result[i + gap])) > 0: 
+
+        for i in range(0, lenght-gap): 
+            if cmp(key(result[i+gap]), key(result[i]))<0: 
                 result[i], result[i + gap] = result[i + gap], result[i] 
                 swapped = True
          
