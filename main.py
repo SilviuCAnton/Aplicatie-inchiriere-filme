@@ -26,4 +26,5 @@ if __name__ == '__main__':
     rentService = RentService(rentRepository, RentValidator(), clientRepository, movieRepository)
 
     console = Console(clientService, movieService, rentService)
+    
     console.run()

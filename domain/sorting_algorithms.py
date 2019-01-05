@@ -123,7 +123,9 @@ def mergeSort(lst, key = lambda x: x, cmp = lambda x, y: -1 if x < y else 1, rev
                 arr[k] = R[j] 
                 j+=1
                 k+=1
-                
+            
+        else: return arr
+        
     helper(myList)
     
     if reverse == True:
