@@ -22,113 +22,104 @@ import unittest
 class TestBacktrackingAlgorithms(unittest.TestCase):
 
     def testIterativeBacktracking(self):
-        IterativeMountainPermutationGenerator.generatePermutations([], [], False)
-        self.assertEqual(IterativeMountainPermutationGenerator.getResult(), [])
+        self.assertEqual(IterativeMountainPermutationGenerator.generatePermutations([]), []) 
         
-        IterativeMountainPermutationGenerator.generatePermutations([], [1, 2, 3], False)
-        self.assertEqual(IterativeMountainPermutationGenerator.getResult(), [[1, 3, 2], [2, 3, 1]])
+        self.assertEqual(IterativeMountainPermutationGenerator.generatePermutations([1, 2, 3]), [[1, 3, 2], [2, 3, 1]])    
         
-        IterativeMountainPermutationGenerator.generatePermutations([], [2, 3, 5, 6], False)
-        self.assertEqual(IterativeMountainPermutationGenerator.getResult(), [[2, 3, 6, 5],
-                                                                             [2, 5, 6, 3],
-                                                                             [2, 6, 5, 3],
-                                                                             [3, 5, 6, 2],
-                                                                             [3, 6, 5, 2],
-                                                                             [5, 6, 3, 2]])
+        self.assertEqual(IterativeMountainPermutationGenerator.generatePermutations([2, 3, 5, 6]), [[2, 3, 6, 5],
+                                                                                          [2, 5, 6, 3],
+                                                                                          [2, 6, 5, 3],
+                                                                                          [3, 5, 6, 2],
+                                                                                          [3, 6, 5, 2],
+                                                                                          [5, 6, 3, 2]])
     
     def testRecursiveBacktracking(self):
-        RecursiveMountainPermutationGenerator.generatePermutations([], [], False)
-        self.assertEqual(RecursiveMountainPermutationGenerator.getResult(), [])
-        RecursiveMountainPermutationGenerator.resetResult()
+        self.assertEqual(RecursiveMountainPermutationGenerator.generatePermutations([]), [])
         
-        RecursiveMountainPermutationGenerator.generatePermutations([], [1, 2, 3], False)
-        self.assertEqual(RecursiveMountainPermutationGenerator.getResult(), [[1, 3, 2], [2, 3, 1]])
-        RecursiveMountainPermutationGenerator.resetResult()
+        self.assertEqual(RecursiveMountainPermutationGenerator.generatePermutations([1, 2, 3]), [[1, 3, 2], [2, 3, 1]])
         
-        RecursiveMountainPermutationGenerator.generatePermutations([], [2, 3, 5, 6], False)
-        self.assertEqual(RecursiveMountainPermutationGenerator.getResult(), [[2, 3, 6, 5],
-                                                                             [2, 5, 6, 3],
-                                                                             [2, 6, 5, 3],
-                                                                             [3, 5, 6, 2],
-                                                                             [3, 6, 5, 2],
-                                                                             [5, 6, 3, 2]])
-        RecursiveMountainPermutationGenerator.resetResult()
+        self.assertEqual(RecursiveMountainPermutationGenerator.generatePermutations([2, 3, 5, 6]), [[2, 3, 6, 5],
+                                                                                                    [2, 5, 6, 3],
+                                                                                                    [2, 6, 5, 3],
+                                                                                                    [3, 5, 6, 2],
+                                                                                                    [3, 6, 5, 2],
+                                                                                                    [5, 6, 3, 2]])
 
 
-class TestSortingAlgorithms(unittest.TestCase):
- 
-    def testSmallLists(self):
-        self.assertEqual([], combSort([]))
-        self.assertEqual([], insertionSort([]))
-        self.assertEqual([], mergeSort([]))
-         
-        self.assertEqual([1], combSort([1]))
-        self.assertEqual([1], insertionSort([1]))
-        self.assertEqual([1], mergeSort([1]))
-         
-        self.assertEqual([1, 2, 3], combSort([3, 2, 1]))
-        self.assertEqual([1, 2, 3], insertionSort([3, 2, 1]))
-        self.assertEqual([1, 2, 3], mergeSort([3, 2, 1]))
-    
-        self.assertEqual([1, 1, 1], combSort([1, 1, 1]))
-        self.assertEqual([1, 1, 1], insertionSort([1, 1, 1]))
-        self.assertEqual([1, 1, 1], mergeSort([1, 1, 1]))
-         
-        self.assertEqual([1, 2, 3], combSort([1, 2, 3]))
-        self.assertEqual([1, 2, 3], insertionSort([1, 2, 3]))
-        self.assertEqual([1, 2, 3], mergeSort([1, 2, 3]))
-         
-    def testBigLists(self):
-        myBigList = []
-        for i in range(20):
-            numberOfElements = randint(500, 1000)
-            for item in range(numberOfElements):
-                myBigList.append(randint(1,500))
-             
-            self.assertEqual(sorted(myBigList), combSort(myBigList))
-            self.assertEqual(sorted(myBigList), insertionSort(myBigList))
-            self.assertEqual(sorted(myBigList), mergeSort(myBigList))
-            myBigList = []
-             
-        for i in range(20):
-            numberOfElements = randint(500, 1000)
-            for item in range(numberOfElements):
-                myBigList.append(randint(1,500))
-             
-            self.assertEqual(sorted(myBigList, key = lambda x: -x), combSort(myBigList, key = lambda x: -x))
-            self.assertEqual(sorted(myBigList, key = lambda x: -x), insertionSort(myBigList, key = lambda x: -x))
-            self.assertEqual(sorted(myBigList, key = lambda x: -x), mergeSort(myBigList, key = lambda x: -x))
-            myBigList = []
-             
-        for i in range(20):
-            numberOfElements = randint(500, 1000)
-            for item in range(numberOfElements):
-                myBigList.append(randint(1,500))
-             
-            self.assertEqual(sorted(myBigList, reverse = True), combSort(myBigList, reverse = True))
-            self.assertEqual(sorted(myBigList, reverse = True), insertionSort(myBigList, reverse = True))
-            self.assertEqual(sorted(myBigList, reverse = True), mergeSort(myBigList, reverse = True))
-            myBigList = []
-             
-        for i in range(20):
-            numberOfElements = randint(500, 1000)
-            for item in range(numberOfElements):
-                myBigList.append(randint(1,500))
-             
-            self.assertEqual(sorted(myBigList, reverse = True), combSort(myBigList, cmp = lambda x, y: y - x))
-            self.assertEqual(sorted(myBigList, reverse = True), insertionSort(myBigList, cmp = lambda x, y: y - x))
-            self.assertEqual(sorted(myBigList, reverse = True), mergeSort(myBigList, cmp = lambda x, y: y - x))
-            myBigList = []
-             
-        for i in range(20):
-            numberOfElements = randint(500, 1000)
-            for item in range(numberOfElements):
-                myBigList.append(randint(1,500))
-             
-            self.assertEqual(sorted(myBigList), combSort(myBigList, key = lambda x: -x, cmp = lambda x, y: y - x))
-            self.assertEqual(sorted(myBigList), insertionSort(myBigList, key = lambda x: -x, cmp = lambda x, y: y - x))
-            self.assertEqual(sorted(myBigList), mergeSort(myBigList, key = lambda x: -x, cmp = lambda x, y: y - x))
-            myBigList = []
+# class TestSortingAlgorithms(unittest.TestCase):
+#  
+#     def testSmallLists(self):
+#         self.assertEqual([], combSort([]))
+#         self.assertEqual([], insertionSort([]))
+#         self.assertEqual([], mergeSort([]))
+#          
+#         self.assertEqual([1], combSort([1]))
+#         self.assertEqual([1], insertionSort([1]))
+#         self.assertEqual([1], mergeSort([1]))
+#          
+#         self.assertEqual([1, 2, 3], combSort([3, 2, 1]))
+#         self.assertEqual([1, 2, 3], insertionSort([3, 2, 1]))
+#         self.assertEqual([1, 2, 3], mergeSort([3, 2, 1]))
+#     
+#         self.assertEqual([1, 1, 1], combSort([1, 1, 1]))
+#         self.assertEqual([1, 1, 1], insertionSort([1, 1, 1]))
+#         self.assertEqual([1, 1, 1], mergeSort([1, 1, 1]))
+#          
+#         self.assertEqual([1, 2, 3], combSort([1, 2, 3]))
+#         self.assertEqual([1, 2, 3], insertionSort([1, 2, 3]))
+#         self.assertEqual([1, 2, 3], mergeSort([1, 2, 3]))
+#          
+#     def testBigLists(self):
+#         myBigList = []
+#         for i in range(20):
+#             numberOfElements = randint(500, 1000)
+#             for item in range(numberOfElements):
+#                 myBigList.append(randint(1,500))
+#              
+#             self.assertEqual(sorted(myBigList), combSort(myBigList))
+#             self.assertEqual(sorted(myBigList), insertionSort(myBigList))
+#             self.assertEqual(sorted(myBigList), mergeSort(myBigList))
+#             myBigList = []
+#              
+#         for i in range(20):
+#             numberOfElements = randint(500, 1000)
+#             for item in range(numberOfElements):
+#                 myBigList.append(randint(1,500))
+#              
+#             self.assertEqual(sorted(myBigList, key = lambda x: -x), combSort(myBigList, key = lambda x: -x))
+#             self.assertEqual(sorted(myBigList, key = lambda x: -x), insertionSort(myBigList, key = lambda x: -x))
+#             self.assertEqual(sorted(myBigList, key = lambda x: -x), mergeSort(myBigList, key = lambda x: -x))
+#             myBigList = []
+#              
+#         for i in range(20):
+#             numberOfElements = randint(500, 1000)
+#             for item in range(numberOfElements):
+#                 myBigList.append(randint(1,500))
+#              
+#             self.assertEqual(sorted(myBigList, reverse = True), combSort(myBigList, reverse = True))
+#             self.assertEqual(sorted(myBigList, reverse = True), insertionSort(myBigList, reverse = True))
+#             self.assertEqual(sorted(myBigList, reverse = True), mergeSort(myBigList, reverse = True))
+#             myBigList = []
+#              
+#         for i in range(20):
+#             numberOfElements = randint(500, 1000)
+#             for item in range(numberOfElements):
+#                 myBigList.append(randint(1,500))
+#              
+#             self.assertEqual(sorted(myBigList, reverse = True), combSort(myBigList, cmp = lambda x, y: y - x))
+#             self.assertEqual(sorted(myBigList, reverse = True), insertionSort(myBigList, cmp = lambda x, y: y - x))
+#             self.assertEqual(sorted(myBigList, reverse = True), mergeSort(myBigList, cmp = lambda x, y: y - x))
+#             myBigList = []
+#              
+#         for i in range(20):
+#             numberOfElements = randint(500, 1000)
+#             for item in range(numberOfElements):
+#                 myBigList.append(randint(1,500))
+#              
+#             self.assertEqual(sorted(myBigList), combSort(myBigList, key = lambda x: -x, cmp = lambda x, y: y - x))
+#             self.assertEqual(sorted(myBigList), insertionSort(myBigList, key = lambda x: -x, cmp = lambda x, y: y - x))
+#             self.assertEqual(sorted(myBigList), mergeSort(myBigList, key = lambda x: -x, cmp = lambda x, y: y - x))
+#             myBigList = []
 
 class TestClient(unittest.TestCase):
     

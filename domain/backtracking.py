@@ -7,17 +7,15 @@ Created on Jan 5, 2019
 class RecursiveMountainPermutationGenerator:
     '''
     Clasa pentru backtracking recursiv - generare permutari de tip munte
-    Inainte de generarea unui nou set de permutari trebuie apelata functia resetResult()!!
     '''
-    __result = []
     
     def __init__(self):
         pass
     
     @staticmethod
-    def generatePermutations(x, myList, varf):
+    def __helper(x, myList, varf, result):
         '''
-        Description: afiseaza pe ecran permutarile de tip munte ale unei liste de numere
+        Description: genereaza permutarile de tip munte ale unei liste de numere
         
         In: 
             - x - posibila solutie (La apel lista vida)
@@ -36,11 +34,43 @@ class RecursiveMountainPermutationGenerator:
          
             if isConsitent:
                 if RecursiveMountainPermutationGenerator.__solution(x, myList, varf):
-                    RecursiveMountainPermutationGenerator.__solutionFound(x)
-                RecursiveMountainPermutationGenerator.generatePermutations(x, myList, varf)
+                    RecursiveMountainPermutationGenerator.__solutionFound(x, result)
+                RecursiveMountainPermutationGenerator.__helper(x, myList, varf, result)
                 varf = False
          
         x.pop()
+    
+    @staticmethod
+    def generatePermutations(myList):
+        '''
+        Description: genereaza permutarile de tip munte ale unei liste date
+        
+        Formalizare: 
+            - solutie candidat:
+                x = (x1,x2,x3,...,xk), xi apartine (0,1,2,...len(mylist)-1)
+                
+            - conditie consistent:
+                x = (x1,x2,x3,...,xk) este consistent daca:
+                    - xi != xj, oricare ar fi i, j
+                    - xi > xj daca nu am trecut de varf (varf = False), unde i>j
+                    - xi < xj daca am trecut de varf (varf = True), unde i>j si len(x)> 2
+            
+            - conditie solutie:
+                x = (x1,x2,x3,...,xk) este solutie daca este consistent, len(x) = len(myList) si am trecut de varf (varf = True)
+        
+        In: 
+            - mylist - lista a carei permutari le generam
+            
+        Out:
+             - result - lista de solutii
+        '''
+        varf = False
+        x = []
+        result = []
+        
+        RecursiveMountainPermutationGenerator.__helper(x, myList, varf, result)
+        return result
+        
     
     @staticmethod
     def __consistent(x, varf, dim):
@@ -79,29 +109,13 @@ class RecursiveMountainPermutationGenerator:
         return len(x) == len(myList) and varf == True
 
     @staticmethod
-    def __solutionFound(x):
+    def __solutionFound(x, resultList):
         '''
         Description: adauga la rezultat o solutie
         
         In: - x - solutia
         '''
-        RecursiveMountainPermutationGenerator.__result.append(x[:])
-        
-    @staticmethod
-    def printResult():
-        '''
-        Description: printeaza rezultatul
-        '''
-        for solution in RecursiveMountainPermutationGenerator.__result:
-            print(solution)
-    
-    @staticmethod    
-    def resetResult():
-        RecursiveMountainPermutationGenerator.__result = []
-        
-    @staticmethod        
-    def getResult():
-        return RecursiveMountainPermutationGenerator.__result
+        resultList.append(x[:])
         
 
 class IterativeMountainPermutationGenerator:
@@ -114,9 +128,9 @@ class IterativeMountainPermutationGenerator:
         pass
     
     @staticmethod
-    def generatePermutations(x, myList, varf):
+    def __helper(x, myList, varf, result):
         '''
-        Description: afiseaza pe ecran permutarile de tip munte ale unei liste de numere
+        Description: genereaza permutarile de tip munte ale unei liste de numere
         
         In: 
             - x - posibila solutie (La apel lista vida)
@@ -124,7 +138,6 @@ class IterativeMountainPermutationGenerator:
             - varf - True daca a fost gasit un posibil varf si False in caz contrar
         '''
         varfGasit = False
-        IterativeMountainPermutationGenerator.__result = []
         x=[-1]
         
         while len(x)>0:
@@ -139,12 +152,43 @@ class IterativeMountainPermutationGenerator:
                 
             if choosed:
                 if IterativeMountainPermutationGenerator.__solution(x, myList, varf):
-                    IterativeMountainPermutationGenerator.__solutionFound(x, myList)
+                    IterativeMountainPermutationGenerator.__solutionFound(x, myList, result)
                 x.append(-1)
                 
             else:
                 x = x[:-1]
                 varf = False
+    
+    @staticmethod
+    def generatePermutations(myList):
+        '''
+        Description: genereaza permutarile de tip munte ale unei liste de numere
+        
+        Formalizare: 
+            - solutie candidat:
+                x = (x1,x2,x3,...,xk), xi apartine (0,1,2,...len(mylist)-1)
+                
+            - conditie consistent:
+                x = (x1,x2,x3,...,xk) este consistent daca:
+                    - xi != xj, oricare ar fi i, j
+                    - xi > xj daca nu am trecut de varf (varf = False), unde i>j
+                    - xi < xj daca am trecut de varf (varf = True), unde i>j si len(x)> 2
+            
+            - conditie solutie:
+                x = (x1,x2,x3,...,xk) este solutie daca este consistent, len(x) = len(myList) si am trecut de varf (varf = True)
+                
+                
+        In: 
+            - mylist - lista a carei permutari le generam
+        Out:
+            - result - lista rezultat
+        '''
+        varf = False
+        x = []
+        result = []
+        
+        IterativeMountainPermutationGenerator.__helper(x, myList, varf, result)
+        return result
  
     @staticmethod
     def __consistent(x, myList, varf):
@@ -184,7 +228,7 @@ class IterativeMountainPermutationGenerator:
         return len(x) == len(myList) and varf == True
     
     @staticmethod
-    def __solutionFound(x, myList):
+    def __solutionFound(x, myList, resultList):
         '''
         Description - adauga o solutie la rezultat
         
@@ -195,17 +239,4 @@ class IterativeMountainPermutationGenerator:
         result = []
         for item in x:
             result.append(myList[item])
-        IterativeMountainPermutationGenerator.__result.append(result)
-    
-    @staticmethod
-    def printResult():  
-        '''
-        Description: printeaza rezultatul
-        '''
-        for solution in IterativeMountainPermutationGenerator.__result:
-            print(solution)
-    
-    @staticmethod        
-    def getResult():
-        return IterativeMountainPermutationGenerator.__result
-    
+        resultList.append(result)
