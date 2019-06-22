@@ -14,4 +14,5 @@ Python 3.6
 * Generating statistics using DTO-s(Data Transfer Objects)
 * Python exceptions
 * Validating data with specific validator classes
+* Test driven development - learned how to use pyunit tests
 * Exercised backtracking and sorting algorithms(merge sort, insertion sort, comb sort)
