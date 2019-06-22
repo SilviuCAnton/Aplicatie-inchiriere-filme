@@ -1,4 +1,4 @@
-# Renting Movies App	
+# Movie Rental App	
 CS - Programming Fundamentals
 
 An application for renting movies. It lets you do client operations (adding clients, modifying, find by id, random client generation),
